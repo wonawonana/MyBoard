@@ -6,7 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -26,34 +29,67 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity {
 
+    //구글 로그인 연동
+
     private FirebaseAuth mAuth = null;
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
-    private SignInButton signInButton;
+    private SignInButton signInButton_google;
+
+    //계정 로그인
+    private EditText editTextemail;
+    private EditText editTextpassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        signInButton = findViewById(R.id.signInButton);
-        signInButton.setOnClickListener(new View.OnClickListener(){
+        signInButton_google = findViewById(R.id.signInButton);
+        signInButton_google.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                signIn();
+                signIn_google();
             }
         });
-
         mAuth = FirebaseAuth.getInstance();
 
+        // Google 로그인을 앱에 통합합니다. 다음과 같이 GoogleSignInOptions 객체를 구성할 때 requestIdToken을 호출합니다.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+
+
+
+        //~~~~~~~~~~~~~~~~~여기부터 계정 로그인~~~~~~~~~~~~~~~~~~
+        editTextemail=findViewById(R.id.editTextTextEmailAddress);
+        editTextpassword=findViewById(R.id.editTextTextPassword);
+        Button signInButton_email=findViewById(R.id.button_login);
+        signInButton_email.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                userLogin(editTextemail.getText().toString(),editTextpassword.getText().toString());
+            }
+        });
+
+
+
+
+
+
     }
 
-    private void signIn() {
+
+
+
+
+
+
+    //~~~~~~구글 계정 연동 ~~~~~~~~~//
+    private void signIn_google() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -74,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    //사용자가 정상적으로 로그인하면 GoogleSignInAccount 객체에서 ID 토큰을 가져와서 Firebase 사용자 인증 정보로 교환하고 해당 정보를 사용해 Firebase에 인증합니다.
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -97,12 +134,56 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser user) { //update ui code here
+        //시작하고 메인 화면
+
         if (user != null) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
         }
     }
+
+
+    //~~~~계정 로그인~~~~~//
+
+    //활동을 초기화할 때 사용자가 현재 로그인되어 있는지 확인합니다
+    //얘는 아직 안 썼음
+    //TAG 는 대체 뭐람
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
+    }
+
+    //사용자가 앱에 로그인하면 다음과 같이 사용자의 이메일 주소와 비밀번호를 signInWithEmailAndPassword에 전달합니다
+    private void userLogin(String email,String password){
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            //Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(LoginActivity.this, "Authentication successed.",
+                                    Toast.LENGTH_SHORT).show();
+                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            //Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            updateUI(null);
+                            // ...
+                        }
+
+                        // ...
+                    }
+                });
+    }
+
 
 
 }
