@@ -88,7 +88,7 @@
         android:text="MyBoard"
         android:textAllCaps="false"
         android:textColor="#272727"
-        android:textSize="18sp"
+        android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
