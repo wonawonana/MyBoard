@@ -39,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     //계정 로그인
     private EditText editTextemail;
     private EditText editTextpassword;
+    private EditText goRegisterButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,15 +77,17 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
-
-
+        //~~~~~~~~~~~~~~회원가입 버튼~~~~~~~~~~~~~~
+        goRegisterButton=findViewById(R.id.goregisterButton);
+        goRegisterButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+              RegisterUI();
+            }
+        });
 
 
     }
-
-
-
-
 
 
 
@@ -141,6 +144,13 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    private void RegisterUI() { //update ui code here
+        //시작하고 메인 화면
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 
