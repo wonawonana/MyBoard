@@ -36,7 +36,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        registerName=findViewById(R.id.editTextTextPersonName);
         registerEmail=findViewById(R.id.editTextTextEmailAddress2);
         registerPassword=findViewById(R.id.editTextTextPassword2);
 
