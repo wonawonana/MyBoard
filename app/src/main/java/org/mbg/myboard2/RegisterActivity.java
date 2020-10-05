@@ -3,6 +3,7 @@ package org.mbg.myboard2;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,21 +49,21 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
 
+
     }
 
     private void updateUI(FirebaseUser user) { //update ui code here
-        //시작하고 메인 화면
+        //시작하고 welcome 화면
 
         if (user != null) {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, WelcomeActivity.class);
             startActivity(intent);
             finish();
         }
     }
 
 
-
-    private void makeUser(String email, String password){
+    private void makeUser(String email, final String password){
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -75,8 +76,12 @@ public class RegisterActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             //Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            if(password.length()<6)
+                                Toast.makeText(RegisterActivity.this, "비밀번호는 6자리 이상이어야 합니다.",
+                                        Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(RegisterActivity.this, "이미 존재하는 이메일 입니다.",
+                                        Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
 

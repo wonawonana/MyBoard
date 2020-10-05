@@ -57,7 +57,7 @@
 
             <EditText
                 android:id="@+id/editTextTextEmailAddress2"
-                android:layout_width="wrap_content"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="email"
@@ -73,7 +73,7 @@
 
             <EditText
                 android:id="@+id/editTextTextPassword2"
-                android:layout_width="wrap_content"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="40dp"
                 android:layout_marginTop="68dp"
@@ -90,9 +90,11 @@
             <Button
                 android:id="@+id/button_register"
 
-                android:layout_width="300dp"
-                android:layout_height="45dp"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
 
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginBottom="80dp"
                 android:background="@drawable/buttonshape_long"
                 android:text="register"
