@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="genre_array">
+        <item>장르 : 전체</item>
+        <item>전략 게임</item>
+        <item>테마 집중형 게임</item>
+        <item>튜닝 가능 게임</item>
+        <item>가족 게임</item>
+        <item>파티 게임</item>
+        <item>어린이 게임</item>
+        <item>퍼즐</item>
+        <item>악세사리/게임 내용물</item>
+        <item>방 탈출 테이블 게임</item>
+        <item>기타</item>
+    </string-array>
+
+    <string-array name="time_array">
+        <item>시간 : 전체</item>
+        <item>30분 미만</item>
+        <item>30분~60분</item>
+        <item>60분~90분</item>
+        <item>90분~120분</item>
+        <item>120분 이상</item>
+    </string-array>
+
+    <string-array name="num_array">
+        <item>인원 : 전체</item>
+        <item>1명</item>
+        <item>2명</item>
+        <item>3명</item>
+        <item>4명</item>
+        <item>5명</item>
+        <item>6명</item>
+        <item>7명</item>
+        <item>8명</item>
+        <item>9명</item>
+        <item>10명 이상</item>
+    </string-array>
+</resources>

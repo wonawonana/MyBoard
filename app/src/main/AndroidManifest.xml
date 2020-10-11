@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".test1" >
 
-        </activity>>
+        </activity>
         <activity android:name=".WelcomeActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".LoginActivity">
