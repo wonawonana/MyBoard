@@ -18,12 +18,13 @@ public class GameData {
     private boolean gtimeless30;
     private boolean gtimemore120;
     private String system;
+    private String imgUrl;
 
     public GameData(){}
 
     public GameData(String genre, String genres, String gnameENG, String gnameKOR, ArrayList<Integer> gnum, String gnumbystring,
                     boolean gtime30_60, boolean gtime60_90, boolean gtime90_120, String gtimebystring,
-                    boolean gtimeless30, boolean gtimemore120, String system){
+                    boolean gtimeless30, boolean gtimemore120, String system,String imgUrl){
         this.genre=genre;
         this.genres=genres;
         this.gnameENG=gnameENG;
@@ -37,6 +38,7 @@ public class GameData {
         this.gtimeless30=gtimeless30;
         this.gtimemore120=gtimemore120;
         this.system=system;
+        this.imgUrl=imgUrl;
     }
 
 
@@ -53,6 +55,7 @@ public class GameData {
     public boolean getGtimeless30(){return gtimeless30;}
     public boolean getGtimemore120(){return gtimemore120;}
     public String getSystem(){return system;}
+    public String getImgUrl(){return imgUrl;}
 
 
 

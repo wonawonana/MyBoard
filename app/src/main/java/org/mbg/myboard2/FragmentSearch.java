@@ -2,6 +2,7 @@ package org.mbg.myboard2;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,7 @@ public class FragmentSearch extends Fragment {
     private Spinner spinnerTime;
     private Spinner spinnerNum;
     private Button searchButton;
+    private Button searchButton2;
 
     ViewGroup viewGroup;
 
@@ -72,7 +74,7 @@ public class FragmentSearch extends Fragment {
         spinnerTime=viewGroup.findViewById(R.id.spinner3);
         spinnerNum=viewGroup.findViewById(R.id.spinner4);
         searchButton=viewGroup.findViewById(R.id.searchButton);
-
+        searchButton2=viewGroup.findViewById(R.id.searchButton2);
         //사이즈 고정
         recyclerView.setHasFixedSize(true);
 
@@ -139,13 +141,12 @@ public class FragmentSearch extends Fragment {
             }
         });
 
-        searchButton.setOnClickListener(new View.OnClickListener(){
+        searchButton2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 if(genre=="전체"&&gtime=="전체"&&gnum==0)
                     searchAll();
                 else if(gtime=="전체"&&gnum==0){
-                    Toast.makeText(context,"야발 분명 돌아가고 있는데",Toast.LENGTH_LONG).show();
                     searchGenre(genre);}
                 else if(gtime=="전체"&&genre=="전체")
                     searchNum(gnum);
@@ -162,20 +163,74 @@ public class FragmentSearch extends Fragment {
                 //Toast.makeText(context,gtime,Toast.LENGTH_LONG).show();
             }
         });
+        searchButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                if(!TextUtils.isEmpty(searchText.getText()))
+                    searchName(searchText.getText().toString());
+                else
+                    Toast.makeText(context,"이름을 입력해 주세요",Toast.LENGTH_LONG).show();
+            }
+        });
 
         mDataset=new ArrayList<>();
 
 
 
 
-        int imgSet=R.drawable.dice;
+        //int imgSet=R.drawable.dice;
         //Toast.makeText(context,Integer.toString(mDataset.size()),Toast.LENGTH_LONG).show();
-        mAdapter = new gameAdapter(getActivity(),mDataset,imgSet);
+        mAdapter = new gameAdapter(getActivity(),mDataset);
         recyclerView.setAdapter(mAdapter);
 
 
         return viewGroup;
     }
+
+    public void searchName(String name){
+
+        if(name.matches(".*[가-힣]+.*")){
+            db.collection("BoardGame").whereEqualTo("gnameKOR", name)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                mDataset.clear();
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    GameData gameData=(document.toObject(GameData.class));
+                                    mDataset.add(gameData);
+                                }
+                                mAdapter.notifyDataSetChanged();
+                            } else {
+                                Toast.makeText(context,"게임이 존재하지 않습니다.",Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+        }
+        else{
+            db.collection("BoardGame").whereEqualTo("gnameENG", name)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                mDataset.clear();
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    GameData gameData=(document.toObject(GameData.class));
+                                    mDataset.add(gameData);
+                                }
+                                mAdapter.notifyDataSetChanged();
+                            } else {
+                                Toast.makeText(context,"게임이 존재하지 않습니다.",Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+        }
+
+
+    }
+
     public void searchAll(){
         db.collection("BoardGame")
                 .get()
@@ -203,15 +258,13 @@ public class FragmentSearch extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             mDataset.clear();
-                            int i=0;
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 GameData gameData=(document.toObject(GameData.class));
-                                i++;
-                                Toast.makeText(context,Integer.toString(i),Toast.LENGTH_LONG).show();
+                                mDataset.add(gameData);
                             }
                             mAdapter.notifyDataSetChanged();
                         } else {
-                            Toast.makeText(context,"Error loading document",Toast.LENGTH_LONG).show();
+                            Toast.makeText(context,"게임이 존재하지 않습니다.",Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -226,10 +279,11 @@ public class FragmentSearch extends Fragment {
                             mDataset.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 GameData gameData=(document.toObject(GameData.class));
+                                mDataset.add(gameData);
                             }
                             mAdapter.notifyDataSetChanged();
                         } else {
-                            Toast.makeText(context,"Error loading document",Toast.LENGTH_LONG).show();
+                            Toast.makeText(context,"게임이 존재하지 않습니다.",Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -244,10 +298,11 @@ public class FragmentSearch extends Fragment {
                             mDataset.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 GameData gameData=(document.toObject(GameData.class));
+                                mDataset.add(gameData);
                             }
                             mAdapter.notifyDataSetChanged();
                         } else {
-                            Toast.makeText(context,"Error loading document",Toast.LENGTH_LONG).show();
+                            Toast.makeText(context,"게임이 존재하지 않습니다.",Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -269,7 +324,7 @@ public class FragmentSearch extends Fragment {
                             //어댑터 갱신
                             mAdapter.notifyDataSetChanged();        //야발 이놈 때문이었군
                         } else {
-                            Toast.makeText(context,"Error loading document",Toast.LENGTH_LONG).show();
+                            Toast.makeText(context,"게임이 존재하지 않습니다.",Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -290,7 +345,7 @@ public class FragmentSearch extends Fragment {
                             //어댑터 갱신
                             mAdapter.notifyDataSetChanged();        //야발 이놈 때문이었군
                         } else {
-                            Toast.makeText(context,"Error loading document",Toast.LENGTH_LONG).show();
+                            Toast.makeText(context,"게임이 존재하지 않습니다.",Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -311,7 +366,7 @@ public class FragmentSearch extends Fragment {
                             //어댑터 갱신
                             mAdapter.notifyDataSetChanged();        //야발 이놈 때문이었군
                         } else {
-                            Toast.makeText(context,"Error loading document",Toast.LENGTH_LONG).show();
+                            Toast.makeText(context,"게임이 존재하지 않습니다.",Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -345,7 +400,7 @@ public class FragmentSearch extends Fragment {
                             //어댑터 갱신
                             mAdapter.notifyDataSetChanged();        //야발 이놈 때문이었군
                         } else {
-                            Toast.makeText(context,"Error loading document",Toast.LENGTH_LONG).show();
+                            Toast.makeText(context,"게임이 존재하지 않습니다.",Toast.LENGTH_LONG).show();
                         }
                     }
                 });

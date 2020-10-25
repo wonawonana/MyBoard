@@ -4,28 +4,43 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> {
 
     //GenericTypeIndicator<ArrayList<GameData>> t = new GenericTypeIndicator<ArrayList<GameData>>() {};
     private ArrayList<GameData> mDataset;
     private Context context;
-    private int imgSet;
+    //private int imgSet;
+    FirebaseFirestore db;
+    String UserEmail;
 
 
     // Provide a suitable constructor (depends on the kind of dataset)
     // 3-1 생성자에서 데이터 리스트 객체를 전달받음. 전체 데이터임
-    public gameAdapter(Context context,ArrayList<GameData> myDataset,int imgSet) {
+    public gameAdapter(Context context,ArrayList<GameData> myDataset) {
         this.context=context;
         mDataset = myDataset;
-        this.imgSet=imgSet;
+        db = FirebaseFirestore.getInstance();       //...?여기다 넣어도 되는건가?
+        //this.imgSet=imgSet;
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        UserEmail=user.getEmail();
     }
 
     // 3-0 아이템 뷰를 저장하는 뷰홀더 클래스. (각 하나)
@@ -37,8 +52,9 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
         public TextView textViewTag3;
         public TextView textViewGtext;
 
-        //public Button likeButton;
+        public Button addListButton;
         public ImageView image;
+
 
         public MyViewHolder(View v) {
             super(v);
@@ -49,7 +65,7 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
             textViewTag2 = v.findViewById(R.id.textView10);
             textViewTag3 = v.findViewById(R.id.textView11);
             textViewGtext= v.findViewById(R.id.textView9);
-            //likeButton=v.findViewById(R.id.imageButton);
+            addListButton=(Button)v.findViewById(R.id.addListButton);
             image=v.findViewById(R.id.imageView2);
         }
     }
@@ -82,7 +98,7 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
         // - replace the contents of the view with that element
         // 각 위치에 문자열 세팅
         //뭐여 포지션이 뭐여
-        String text1 = (String) mDataset.get(position).getGnameKOR();//position 번호의 데이터(객체)의 게임 이름
+        final String text1 = (String) mDataset.get(position).getGnameKOR();//position 번호의 데이터(객체)의 게임 이름
         String text2 = (String) mDataset.get(position).getGenres();     //게임 장르
         String text3 = (String) mDataset.get(position).getGnumbystring();   //게임 인원
         String text4 = (String) mDataset.get(position).getGtimebystring();  //게임 시간
@@ -93,9 +109,29 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
         holder.textViewTag2.setText(text3) ;
         holder.textViewTag3.setText(text4) ;
         holder.textViewGtext.setText(text5) ;
-        holder.image.setBackgroundResource(this.imgSet);
+        Glide.with(context).load(mDataset.get(position).getImgUrl()).override(150, 150).centerCrop().error(android.R.drawable.stat_notify_error)
+                .placeholder(R.drawable.ic_launcher_background).into(holder.image);
         //holder.textView2.setText((String)mDataset.get(position));
+        //Glide.with(context).load(img1).override(200, 200).centerCrop().error(android.R.drawable.stat_notify_error)
+        //                .placeholder(R.drawable.ic_launcher_background).into(holder.image);
 
+        holder.addListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //이미 add 했다? -> toast 이미 추가한 게임입니다.
+                //else -> toast list 에 추가했습니다.
+                HashMap<String,String> memo = new HashMap<String,String>(){{//초기값 지정
+                    put("memo","");
+                }};
+                CollectionReference mPostReference =
+                        (CollectionReference) db.collection("member").document(UserEmail)
+                                .collection("LikeGame");
+                mPostReference
+                        .document(text1)
+                        .set(memo);
+                Toast.makeText(context, "like list 에 추가했습니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // Return the size of your dataset (invoked by the layout manager)

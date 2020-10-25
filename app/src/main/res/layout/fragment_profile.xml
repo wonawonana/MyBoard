@@ -7,38 +7,40 @@
     android:background="#FFFFFF"
 
 
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight = "1"/>
+        android:layout_weight="1" />
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight = "1"
-        android:gravity="center_horizontal"
-        android:text="My Profile"
-        android:textSize="18sp" />
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        app:srcCompat="@drawable/myprofile_name" />
 
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight = "1"
+        android:layout_weight="1"
+        android:backgroundTint="#03070D"
         android:src="@drawable/menu_user" />
 
     <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight = "1"/>
+        android:layout_weight="1" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight = "1"
+        android:layout_height="70dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
@@ -46,7 +48,8 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="TextView1"
@@ -57,6 +60,7 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="15dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="loading..."
@@ -66,12 +70,12 @@
     <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight = "1"/>
+        android:layout_weight="1" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight = "1"
+        android:layout_weight="1"
         android:orientation="horizontal">
 
         <Button
@@ -79,13 +83,13 @@
             android:layout_width="300dp"
             android:layout_height="35dp"
             android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_weight="1"
             android:background="@drawable/buttonshape_long"
             android:text="logout"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
 
             />
     </LinearLayout>

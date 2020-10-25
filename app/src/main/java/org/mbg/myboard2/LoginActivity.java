@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -27,6 +28,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import org.w3c.dom.Text;
+
 public class LoginActivity extends AppCompatActivity {
 
     //구글 로그인 연동
@@ -39,13 +42,14 @@ public class LoginActivity extends AppCompatActivity {
     //계정 로그인
     private EditText editTextemail;
     private EditText editTextpassword;
-    private EditText goRegisterButton;
+    private TextView goRegisterButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        /*
         signInButton_google = findViewById(R.id.signInButton);
         signInButton_google.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -53,16 +57,16 @@ public class LoginActivity extends AppCompatActivity {
                 signIn_google();
             }
         });
-        mAuth = FirebaseAuth.getInstance();
+
 
         // Google 로그인을 앱에 통합합니다. 다음과 같이 GoogleSignInOptions 객체를 구성할 때 requestIdToken을 호출합니다.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);*/
 
-
+        mAuth = FirebaseAuth.getInstance();
 
 
         //~~~~~~~~~~~~~~~~~여기부터 계정 로그인~~~~~~~~~~~~~~~~~~
@@ -78,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         //~~~~~~~~~~~~~~회원가입 버튼~~~~~~~~~~~~~~
-        goRegisterButton=findViewById(R.id.goregisterButton);
+        goRegisterButton=findViewById(R.id.textViewRegister);
         goRegisterButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -152,6 +156,12 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+    private void WelcomeUI(FirebaseUser user) { //구글 첫 로그인 시 웰컴 화면
+        //시작하고 메인 화면
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
 
     //~~~~계정 로그인~~~~~//
@@ -177,13 +187,13 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             //Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(LoginActivity.this, "Authentication successed.",
+                            Toast.makeText(LoginActivity.this, "환영합니다.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             //Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginActivity.this, "로그인 실패",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                             // ...
