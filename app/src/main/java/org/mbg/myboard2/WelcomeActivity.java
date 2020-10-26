@@ -26,7 +26,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -102,7 +105,6 @@ public class WelcomeActivity extends AppCompatActivity {
 
                 String email=getUserEmail();
                 addCustomClass(nickname.getText().toString(),email,tagGenre);
-
             }
         });
 
@@ -283,7 +285,7 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
 
-    public void addCustomClass(String nickname,String email,ArrayList tagGenre) {
+    public void addCustomClass(String nickname, final String email, ArrayList tagGenre) {
         // [START add_custom_class]
         //City city = new City("Los Angeles", "CA", "USA", false, 5000000L, Arrays.asList("west_coast", "sorcal"));
         /*List list=new ArrayList();
@@ -304,6 +306,7 @@ public class WelcomeActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(getApplicationContext(),"가입을 환영합니다!",Toast.LENGTH_LONG).show();
+                underCollectionTag(email);
                 updateUI();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -313,6 +316,10 @@ public class WelcomeActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"Error writing document",Toast.LENGTH_LONG).show();
             }
         });
+
+
+
+
 
         /*
         User user=new User(list,"","email.com","firestore");
@@ -332,6 +339,71 @@ public class WelcomeActivity extends AppCompatActivity {
                 });
         // [END add_custom_class]*/
     }
+
+    void underCollectionTag(String email){
+        Map<String,Integer> tagnumber=new HashMap<String,Integer>();
+        tagnumber.put("num",0);
+
+        //1. 하위 컬랙션-tag 시간
+        ArrayList<String> LikeTime=new ArrayList<String>();
+        LikeTime.add("gtimeless30");
+        LikeTime.add("gtime30_60");
+        LikeTime.add("gtime60_90");
+        LikeTime.add("gtime90_120");
+        LikeTime.add("gtimemore120");
+
+        CollectionReference mPostTagTime=(CollectionReference)db.collection("member").document(email)
+                .collection("LikeTime");
+        Iterator<String> it = LikeTime.iterator();
+        while(it.hasNext()) {
+            String number = it.next();
+            mPostTagTime
+                    .document(number)
+                    .set(tagnumber); //++1*/
+        }
+
+        //2. 하위 컬랙션 - tag 인원
+        ArrayList<String> LikeNum=new ArrayList<String>();
+        for(int i=1;i<11;i++){
+            LikeNum.add(Integer.toString(i));
+        }
+
+        CollectionReference mPostTagNum=(CollectionReference)db.collection("member").document(email)
+                .collection("LikeNum");
+        it = LikeNum.iterator();
+        while(it.hasNext()) {
+            String number = it.next();
+            mPostTagNum
+                    .document(number)
+                    .set(tagnumber); //++1*/
+        }
+
+        //3. 하위 컬랙션 - tag 장르
+        ArrayList<String> LikeGenre=new ArrayList<String>();
+        LikeGenre.add("전략 게임");
+        LikeGenre.add("테마 집중형 게임");
+        LikeGenre.add("튜닝 가능 게임");
+        LikeGenre.add("가족 게임");
+        LikeGenre.add("파티 게임");
+        LikeGenre.add("어린이 게임");
+        LikeGenre.add("퍼즐");
+        LikeGenre.add("악세사리_게임 내용물");
+        LikeGenre.add("방 탈출 테이블 게임");
+        LikeGenre.add("기타");
+
+        CollectionReference mPostTagGenre=(CollectionReference)db.collection("member").document(email)
+                .collection("LikeGenre");
+        it = LikeGenre.iterator();
+        while(it.hasNext()) {
+            String number = it.next();
+            mPostTagGenre
+                    .document(number)
+                    .set(tagnumber); //++1*/
+        }
+
+
+    }
+
 
 
 }

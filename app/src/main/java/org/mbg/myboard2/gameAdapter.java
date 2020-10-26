@@ -15,10 +15,12 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -99,10 +101,22 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
         // 각 위치에 문자열 세팅
         //뭐여 포지션이 뭐여
         final String text1 = (String) mDataset.get(position).getGnameKOR();//position 번호의 데이터(객체)의 게임 이름
-        String text2 = (String) mDataset.get(position).getGenres();     //게임 장르
-        String text3 = (String) mDataset.get(position).getGnumbystring();   //게임 인원
-        String text4 = (String) mDataset.get(position).getGtimebystring();  //게임 시간
+        final String text2 = (String) mDataset.get(position).getGenres();     //게임 장르
+        final String text3 = (String) mDataset.get(position).getGnumbystring();   //게임 인원
+        final String text4 = (String) mDataset.get(position).getGtimebystring();  //게임 시간
         String text5 = (String) mDataset.get(position).getSystem();     //시스템
+
+
+        final String textGenre=(String) mDataset.get(position).getGenre();
+        //final List listTime=new ArrayList<Map>();
+        final Map <String, Boolean>timeMap=new HashMap<String,Boolean>();
+        timeMap.put("gtimeless30",mDataset.get(position).getGtimeless30());
+        timeMap.put("gtime30_60",mDataset.get(position).getGTime30_60());
+        timeMap.put("gtime60_90",mDataset.get(position).getGTime60_90());
+        timeMap.put("gtime90_120",mDataset.get(position).getGTime90_120());
+        timeMap.put("gtimemore120",mDataset.get(position).getGtimemore120());
+               // listTime.add(timeMap);
+        final ArrayList<Integer> gnum=(ArrayList)mDataset.get(position).getGnum();
 
         holder.textViewGname.setText(text1) ;
         holder.textViewTag1.setText(text2) ;
@@ -123,15 +137,61 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
                 HashMap<String,String> memo = new HashMap<String,String>(){{//초기값 지정
                     put("memo","");
                 }};
+                //각 유저마다 메모 추가
                 CollectionReference mPostReference =
                         (CollectionReference) db.collection("member").document(UserEmail)
                                 .collection("LikeGame");
                 mPostReference
                         .document(text1)
                         .set(memo);
+
+                //각 유저마다 태그 수 추가
+                //1. 장르 (단일 장르로 우선 한정)
+                TagGenrePlus(UserEmail,textGenre);
+                //2. 시간
+                TagTimePlus(timeMap);
+                //3. 인원
+                TagNumPlus(gnum);
+
                 Toast.makeText(context, "like list 에 추가했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    void TagGenrePlus(String UserEmail, String textGenre){
+        CollectionReference mPostTagGenre=(CollectionReference)db.collection("member").document(UserEmail)
+                .collection("LikeGenre");
+        mPostTagGenre
+                .document(textGenre)
+                .update("num", FieldValue.increment(1)); //++1
+    }
+
+    void TagTimePlus(Map <String, Boolean>timeSet){
+        //value - true 인 value 만 document 로 ++1
+        CollectionReference mPostTagTime=(CollectionReference)db.collection("member").document(UserEmail)
+                .collection("LikeTime");
+        Iterator<String> keys = timeSet.keySet().iterator();
+        while (keys.hasNext()){
+            String key = keys.next();
+            Boolean value= timeSet.get(key);
+            if(value){  //true 일때만 ++1
+                mPostTagTime
+                        .document(key)
+                        .update("num",FieldValue.increment(1));
+            }
+        }
+    }
+
+    void TagNumPlus(ArrayList<Integer> gnum){
+        CollectionReference mPostTagNum=(CollectionReference)db.collection("member").document(UserEmail)
+                .collection("LikeNum");
+        Iterator<Integer> it = gnum.iterator();
+        while(it.hasNext()) {
+            String number = it.next().toString();
+            mPostTagNum
+                    .document(number)
+                    .update("num",FieldValue.increment(1));
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

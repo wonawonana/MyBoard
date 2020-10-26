@@ -14,9 +14,10 @@ public class GameData {
     private boolean gtime30_60;
     private boolean gtime60_90;
     private boolean gtime90_120;
-    private String gtimebystring;
     private boolean gtimeless30;
     private boolean gtimemore120;
+
+    private String gtimebystring;
     private String system;
     private String imgUrl;
 

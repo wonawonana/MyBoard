@@ -2,7 +2,10 @@ package org.mbg.myboard2;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -26,7 +29,9 @@ public class MainActivity extends AppCompatActivity {
     FragmentProfile fragmentProfile;
     FragmentSearch fragmentSearch;
 
-
+   public void replaceFragment(MapView tf){
+       getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, tf).commitAllowingStateLoss();
+   }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

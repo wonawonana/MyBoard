@@ -1,6 +1,8 @@
 package org.mbg.myboard2;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +15,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -31,7 +39,12 @@ public class likeAdapter extends RecyclerView.Adapter<likeAdapter.MyViewHolder> 
 
     FirebaseFirestore db;
     String UserEmail;
+    TextView gGenre;
+    TextView gNum;
+    TextView gTime;
+    TextView gSys;
 
+    ImageView iv;
 
     public likeAdapter(Context context,ArrayList<LikeData> myDataset) {
         this.context=context;
@@ -86,11 +99,52 @@ public class likeAdapter extends RecyclerView.Adapter<likeAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(final likeAdapter.MyViewHolder holder, int position){
-        String text1 = (String) mDataset.get(position).getGnameKOR();
+        final String text1 = (String) mDataset.get(position).getGnameKOR();
         String text2 = (String) mDataset.get(position).getMemo();
 
         holder.textViewGname.setText(text1);
         holder.textViewMemo.setText(text2);
+
+        holder.moreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog dialog=new Dialog(context);
+                dialog.setContentView(R.layout.view_game_likelist);
+                TextView gname =(TextView)dialog.findViewById(R.id.textView7);
+                gname.setText(text1);
+
+                gGenre =(TextView)dialog.findViewById(R.id.textView8);
+                gNum =(TextView)dialog.findViewById(R.id.textView10);
+                gTime =(TextView)dialog.findViewById(R.id.textView11);
+                gSys=(TextView)dialog.findViewById(R.id.textView9);
+
+                iv=(ImageView)dialog.findViewById(R.id.imageView2);
+
+                DocumentReference docRef = db.collection("BoardGame").document(text1);
+                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                gGenre.setText(document.get("genres").toString());
+                                gNum.setText(document.get("gnumbystring").toString());
+                                gTime.setText(document.get("gtimebystring").toString());
+                                gSys.setText(document.get("system").toString());
+                                Glide.with(context).load(document.get("imgUrl").toString()).override(150, 150).centerCrop().error(android.R.drawable.stat_notify_error)
+                                        .placeholder(R.drawable.ic_launcher_background).into(iv);
+                            } else {
+                               // Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            //Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
+
+
+            }
+        });
 
         holder.saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
