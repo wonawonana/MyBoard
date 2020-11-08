@@ -2,6 +2,7 @@ package org.mbg.myboard2;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -75,6 +76,11 @@ public class FragmentSearch extends Fragment {
         spinnerNum=viewGroup.findViewById(R.id.spinner4);
         searchButton=viewGroup.findViewById(R.id.searchButton);
         searchButton2=viewGroup.findViewById(R.id.searchButton2);
+
+        searchText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+
+
+
         //사이즈 고정
         recyclerView.setHasFixedSize(true);
 
@@ -85,7 +91,6 @@ public class FragmentSearch extends Fragment {
 
 
         //장르 , 시간 , 인원 정하기
-
 
         //spinner
         spinnerGenre.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -190,7 +195,9 @@ public class FragmentSearch extends Fragment {
     public void searchName(String name){
 
         if(name.matches(".*[가-힣]+.*")){
-            db.collection("BoardGame").whereEqualTo("gnameKOR", name)
+            //한글
+
+            db.collection("BoardGame").orderBy("gnameKOR").startAt(name).endAt(name+'\uf8ff')
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -207,9 +214,29 @@ public class FragmentSearch extends Fragment {
                             }
                         }
                     });
+
+
+            /*
+            db.collection("BoardGame").whereEqualTo("gnameKOR", name)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                mDataset.clear();
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    GameData gameData=(document.toObject(GameData.class));
+                                    mDataset.add(gameData);
+                                }
+                                mAdapter.notifyDataSetChanged();
+                            } else {
+                                Toast.makeText(context,"게임이 존재하지 않습니다.",Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });*/
         }
         else{
-            db.collection("BoardGame").whereEqualTo("gnameENG", name)
+            db.collection("BoardGame").orderBy("gnameENG").startAt(name).endAt(name+'\uf8ff')
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override

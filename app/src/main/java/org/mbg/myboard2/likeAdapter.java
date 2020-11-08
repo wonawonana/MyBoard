@@ -2,12 +2,15 @@ package org.mbg.myboard2;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +46,7 @@ public class likeAdapter extends RecyclerView.Adapter<likeAdapter.MyViewHolder> 
     TextView gNum;
     TextView gTime;
     TextView gSys;
+    ImageButton gYou;
 
     ImageView iv;
 
@@ -117,6 +121,7 @@ public class likeAdapter extends RecyclerView.Adapter<likeAdapter.MyViewHolder> 
                 gNum =(TextView)dialog.findViewById(R.id.textView10);
                 gTime =(TextView)dialog.findViewById(R.id.textView11);
                 gSys=(TextView)dialog.findViewById(R.id.textView9);
+                gYou=(ImageButton)dialog.findViewById(R.id.youtubeButton);
 
                 iv=(ImageView)dialog.findViewById(R.id.imageView2);
 
@@ -127,12 +132,37 @@ public class likeAdapter extends RecyclerView.Adapter<likeAdapter.MyViewHolder> 
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
+                                //Toast.makeText(context, "more 눌러졌엉", Toast.LENGTH_SHORT).show();
                                 gGenre.setText(document.get("genres").toString());
                                 gNum.setText(document.get("gnumbystring").toString());
                                 gTime.setText(document.get("gtimebystring").toString());
                                 gSys.setText(document.get("system").toString());
                                 Glide.with(context).load(document.get("imgUrl").toString()).override(150, 150).centerCrop().error(android.R.drawable.stat_notify_error)
                                         .placeholder(R.drawable.ic_launcher_background).into(iv);
+                                String youtubeUrllink=document.getString("youtubeUrl");
+                                if(youtubeUrllink!=""){
+                                    gYou.setVisibility(View.VISIBLE);
+                                    gYou.setOnClickListener(new View.OnClickListener(){
+                                        @Override
+                                        public void onClick(View v){
+                                            //2. 존재하므로 클릭시 url 연결
+                                            Intent intent = new Intent(Intent.ACTION_VIEW,
+                                                    Uri.parse(youtubeUrllink));
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            v.getContext().startActivity(intent);
+
+                                        }
+                                    });
+                                }
+                                else{
+                                    gYou.setVisibility(View.GONE);
+                                    gYou.setOnClickListener(new View.OnClickListener(){
+                                        @Override
+                                        public void onClick(View v){
+                                        }
+                                    });
+                                }
+
                             } else {
                                // Log.d(TAG, "No such document");
                             }
@@ -142,6 +172,7 @@ public class likeAdapter extends RecyclerView.Adapter<likeAdapter.MyViewHolder> 
                     }
                 });
 
+                dialog.show();
 
             }
         });

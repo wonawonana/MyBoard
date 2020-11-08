@@ -14,10 +14,19 @@ public class BoardCafe implements Parcelable{
     String road_address_name;
     double x;
     double y;
+    String id;
+    //별점
+    float star_num_game=(float)0;
+    float star_clean=(float)0;
+    float star_service=(float)0;
+    //게임 이름
+    String input_game_name="";
+
 
 
     //외부에서 사용하는 생성자
-    public BoardCafe(String address_name, String phone, String place_name, String place_url, String road_address_name, double x, double y){
+    public BoardCafe(String id,String address_name, String phone, String place_name, String place_url, String road_address_name, double x, double y) {
+        this.id=id;
         this.address_name=address_name;
         this.phone=phone;
         this.place_name=place_name;
@@ -25,6 +34,7 @@ public class BoardCafe implements Parcelable{
         this.road_address_name=road_address_name;
         this.x=x;
         this.y=y;
+
     }
 
     //Creator가 사용하는 생성자

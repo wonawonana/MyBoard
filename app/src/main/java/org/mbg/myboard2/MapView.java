@@ -4,15 +4,22 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuItemCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.firebase.firestore.CollectionReference;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraAnimation;
 import com.naver.maps.map.CameraUpdate;
@@ -27,18 +34,23 @@ import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.util.FusedLocationSource;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static android.content.Intent.getIntent;
 
-public class MapView extends Fragment implements OnMapReadyCallback {
+public class MapView extends Fragment implements OnMapReadyCallback{
 
     ViewGroup viewGroup;
     //위치
     FusedLocationSource locationSource;
     private static final int LOCATION_PERMISSION_REQUEST_CODE=1000;
     //FragmentMap에서 전달받은 데이터- 카페, 위도&경도
-    ArrayList<BoardCafe> cafe_map=new ArrayList<BoardCafe>();
+    static ArrayList<BoardCafe> cafe_map=new ArrayList<BoardCafe>();
     double latitude, longitude;
+    //spinner array
+    ArrayList<String> spinner_array= new ArrayList<String>();
+    //search view
+    SearchView searchView;
 
     @Nullable
     @Override
@@ -46,7 +58,8 @@ public class MapView extends Fragment implements OnMapReadyCallback {
     {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_map,container,false);
         locationSource=new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
-
+        //search view
+        //searchView= viewGroup.findViewById(R.id.search_map);
         //데이터 받기
         cafe_map=getArguments().getParcelableArrayList("list");
         latitude= getArguments().getDouble("latitude", 0.0);
@@ -66,13 +79,12 @@ public class MapView extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
-        //사용자위치
+        /*사용자위치*/
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
         CameraUpdate cameraUpdate= CameraUpdate.scrollTo(new LatLng(latitude,longitude)).animate(CameraAnimation.Fly);
-
 
         /*cafe_map -> markers*/
         ArrayList<Marker> markers=new ArrayList<Marker>();
@@ -93,9 +105,74 @@ public class MapView extends Fragment implements OnMapReadyCallback {
             markers.get(m).setMap(naverMap);
         }
 
-        InfoWindow infoWindow= new InfoWindow();
+        /*InfoWindows*/
+        //인포창 리스트
+        ArrayList<InfoWindow> list_info= new ArrayList<InfoWindow>();
+        for(int i=0;i<cafe_map.size();i++){
+            list_info.add(new InfoWindow());
+        }
+        //ViewGroup 리스트
+        ArrayList<ViewGroup> list_rootView= new ArrayList<ViewGroup>();
+        for(int i=0;i<list_info.size();i++){
+            list_rootView.add((ViewGroup) getView().findViewById(R.id.fragment_container_view_tag));
+        }
+        //pointAdapter 리스트
+        ArrayList<pointAdapter> list_pointAdapter= new ArrayList<pointAdapter>();
+        for(int i=0;i<list_info.size();i++){
+            list_pointAdapter.add(new pointAdapter(getActivity(), list_rootView.get(i),
+                    cafe_map.get(i).place_name,cafe_map.get(i).address_name, cafe_map.get(i).phone, cafe_map.get(i).place_url, i));
+        }
+        for(int i=0;i<list_info.size();i++){
+            list_info.get(i).setAdapter(list_pointAdapter.get(i));
+        }
+        //마크 클릭 시 인포 창 켜짐/ 다시 누르면 꺼짐
+        for(int i=0;i<list_info.size();i++){
+            int finalI = i;
+            markers.get(i).setOnClickListener(overlay -> {
+                Marker marker=(Marker)overlay;
+                if(marker.getInfoWindow() ==null){
+                    list_info.get(finalI).open(marker);
+                }else{
+                    list_info.get(finalI).close();
+                }
+                return true;
+            });
+        }
+
+        /*dialog*/
+
+        //인포창 클릭->별점창
+        for(int i=0;i<list_info.size();i++) {
+            int finalI = i;
+            list_info.get(i).setOnClickListener(overlay -> {
+                StarDialogFragment s = StarDialogFragment.getInstance(finalI);
+                //별점창 띄우기
+                s.show(getFragmentManager(), StarDialogFragment.TAG_EVENT_DIALOG);
+                //별점 값 받아오기
+                return true;
+            });
+        }
+/*
+        //인포창 클릭->게임 입력창
+        for(int i=0;i<list_info.size();i++) {
+            int finalI = i;
+            list_info.get(i).setOnClickListener(overlay -> {
+                GameDialogFragment g = GameDialogFragment.getInstance(finalI);
+                //별점창 띄우기
+                g.show(getFragmentManager(), GameDialogFragment.TAG_EVENT_DIALOG);
+                //별점 값 받아오기
+                return true;
+            });
+        }*/
+
+        /*search view*/
+        //searchView.setOnQueryTextListener(object : SearchView.onQuery);
+
 
 
 
     }
+
+
+
 }

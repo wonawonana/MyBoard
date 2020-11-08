@@ -11,5 +11,9 @@
         <item name="windowNoTitle">true</item>
 
     </style>
+    <style name="CustomRatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@color/colorStar_base</item>
+        <item name="colorControlActivated">@color/colorStar</item>
+    </style>
 
 </resources>

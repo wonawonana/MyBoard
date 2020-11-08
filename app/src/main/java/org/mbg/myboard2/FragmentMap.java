@@ -130,6 +130,7 @@ public class FragmentMap extends Fragment {
                     for(int i=0;i<doc_Array.length();i++){
                         cafe_info=doc_Array.getJSONObject(i);
                         board_cafe_list.add(new BoardCafe(
+                                cafe_info.getString("id"),
                                 cafe_info.getString("address_name"),
                                 cafe_info.getString("phone"),
                                 cafe_info.getString("place_name"),

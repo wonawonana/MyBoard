@@ -1,22 +1,32 @@
 package org.mbg.myboard2;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +66,7 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
 
         public Button addListButton;
         public ImageView image;
+        public ImageButton youtubeButton;
 
 
         public MyViewHolder(View v) {
@@ -69,6 +80,20 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
             textViewGtext= v.findViewById(R.id.textView9);
             addListButton=(Button)v.findViewById(R.id.addListButton);
             image=v.findViewById(R.id.imageView2);
+            youtubeButton=v.findViewById(R.id.youtubeButton);
+
+            //아이템 클릭 이벤트 처리
+            /*
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO : process click event.
+                    int pos = getAdapterPosition() ;
+                    if (pos != RecyclerView.NO_POSITION) {
+                        //click event
+                    }
+                }
+            });*/
         }
     }
 
@@ -105,7 +130,7 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
         final String text3 = (String) mDataset.get(position).getGnumbystring();   //게임 인원
         final String text4 = (String) mDataset.get(position).getGtimebystring();  //게임 시간
         String text5 = (String) mDataset.get(position).getSystem();     //시스템
-
+        String youtubeUrllink=(String)mDataset.get(position).getYoutubeUrl();   //유튜브 링크
 
         final String textGenre=(String) mDataset.get(position).getGenre();
         //final List listTime=new ArrayList<Map>();
@@ -141,29 +166,87 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
                 CollectionReference mPostReference =
                         (CollectionReference) db.collection("member").document(UserEmail)
                                 .collection("LikeGame");
+                /*
                 mPostReference
                         .document(text1)
-                        .set(memo);
+                        .set(memo);*/
+                mPostReference
+                        .document(text1)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        Toast.makeText(context, "이미 추가된 게임입니다.", Toast.LENGTH_SHORT).show();
+                                        //Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                                    } else {
+                                        //내 컬랙션에 추가하지 않은 게임일때
+                                        //Log.d(TAG, "No such document");
+                                        //각 유저마다 태그 수 추가
+                                        //1. 장르 (단일 장르로 우선 한정)
+                                        TagGenrePlus(UserEmail,textGenre);
+                                        //2. 시간
+                                        TagTimePlus(timeMap);
+                                        //3. 인원
+                                        TagNumPlus(gnum);
+                                        //보드게임 likeNum ++1
+                                        LikeNumPlus(text1);
 
-                //각 유저마다 태그 수 추가
-                //1. 장르 (단일 장르로 우선 한정)
-                TagGenrePlus(UserEmail,textGenre);
-                //2. 시간
-                TagTimePlus(timeMap);
-                //3. 인원
-                TagNumPlus(gnum);
+                                        //1. 메모 추가
+                                        mPostReference.document(text1).set(memo);
+                                        Toast.makeText(context, "like list 에 추가했습니다.", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    //Log.d(TAG, "get failed with ", task.getException());
 
-                Toast.makeText(context, "like list 에 추가했습니다.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
             }
         });
+
+        //1. null 이 아니면 이미지 버튼 보여주기
+        if(youtubeUrllink!=""){
+            holder.youtubeButton.setVisibility(View.VISIBLE);
+            holder.youtubeButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    //2. 존재하므로 클릭시 url 연결
+                    Intent intent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(youtubeUrllink));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    v.getContext().startActivity(intent);
+
+                }
+            });
+        }
+        else{
+            holder.youtubeButton.setVisibility(View.GONE);
+            holder.youtubeButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                }
+            });
+        }
+
+    }
+
+    void LikeNumPlus(String gameName){
+        db.collection("BoardGame").document(gameName).update("likeNum",FieldValue.increment(1));
     }
 
     void TagGenrePlus(String UserEmail, String textGenre){
         CollectionReference mPostTagGenre=(CollectionReference)db.collection("member").document(UserEmail)
                 .collection("LikeGenre");
-        mPostTagGenre
-                .document(textGenre)
-                .update("num", FieldValue.increment(1)); //++1
+        if(textGenre!=""){
+            mPostTagGenre
+                    .document(textGenre)
+                    .update("num", FieldValue.increment(1)); //++1
+        }
+
     }
 
     void TagTimePlus(Map <String, Boolean>timeSet){
