@@ -41,14 +41,16 @@ public class likeAdapter extends RecyclerView.Adapter<likeAdapter.MyViewHolder> 
     private Context context;
 
     FirebaseFirestore db;
-    String UserEmail;
-    TextView gGenre;
-    TextView gNum;
-    TextView gTime;
-    TextView gSys;
-    ImageButton gYou;
+    private String UserEmail;
+    private TextView gGenre;
+    private TextView gNum;
+    private TextView gTime;
+    private TextView gSys;
+    private ImageButton gYou;
+    private TextView YoutubeText;
 
-    ImageView iv;
+
+    private ImageView iv;
 
     public likeAdapter(Context context,ArrayList<LikeData> myDataset) {
         this.context=context;
@@ -122,6 +124,7 @@ public class likeAdapter extends RecyclerView.Adapter<likeAdapter.MyViewHolder> 
                 gTime =(TextView)dialog.findViewById(R.id.textView11);
                 gSys=(TextView)dialog.findViewById(R.id.textView9);
                 gYou=(ImageButton)dialog.findViewById(R.id.youtubeButton);
+                YoutubeText=(TextView)dialog.findViewById(R.id.textView15);
 
                 iv=(ImageView)dialog.findViewById(R.id.imageView2);
 
@@ -141,6 +144,7 @@ public class likeAdapter extends RecyclerView.Adapter<likeAdapter.MyViewHolder> 
                                         .placeholder(R.drawable.ic_launcher_background).into(iv);
                                 String youtubeUrllink=document.getString("youtubeUrl");
                                 if(youtubeUrllink!=""){
+                                    YoutubeText.setVisibility(View.VISIBLE);
                                     gYou.setVisibility(View.VISIBLE);
                                     gYou.setOnClickListener(new View.OnClickListener(){
                                         @Override
@@ -155,6 +159,7 @@ public class likeAdapter extends RecyclerView.Adapter<likeAdapter.MyViewHolder> 
                                     });
                                 }
                                 else{
+                                    YoutubeText.setVisibility(View.GONE);
                                     gYou.setVisibility(View.GONE);
                                     gYou.setOnClickListener(new View.OnClickListener(){
                                         @Override

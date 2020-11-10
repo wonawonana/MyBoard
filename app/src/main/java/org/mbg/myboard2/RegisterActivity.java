@@ -27,6 +27,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText registerName;
     private EditText registerEmail;
     private EditText registerPassword;
+    private EditText passwordConfirm;
 
 
 
@@ -39,12 +40,22 @@ public class RegisterActivity extends AppCompatActivity {
 
         registerEmail=findViewById(R.id.editTextTextEmailAddress2);
         registerPassword=findViewById(R.id.editTextTextPassword2);
+        passwordConfirm=findViewById(R.id.editTextTextPassword3);
 
         Button registerButton=findViewById(R.id.button_register);
         registerButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                makeUser(registerEmail.getText().toString(),registerPassword.getText().toString());
+                if("".equals(registerEmail.getText().toString()))
+                    Toast.makeText(RegisterActivity.this, "이메일을 입력해 주세요.",
+                            Toast.LENGTH_SHORT).show();
+                else if("".equals(registerPassword.getText().toString()))
+                    Toast.makeText(RegisterActivity.this, "비밀번호를 입력해 주세요.",
+                            Toast.LENGTH_SHORT).show();
+                else if(!passwordConfirm.getText().toString().equals(registerPassword.getText().toString()))
+                    Toast.makeText(RegisterActivity.this, "비밀번호가 일치하지 않습니다.",
+                            Toast.LENGTH_SHORT).show();
+                else makeUser(registerEmail.getText().toString(),registerPassword.getText().toString());
             }
         });
 

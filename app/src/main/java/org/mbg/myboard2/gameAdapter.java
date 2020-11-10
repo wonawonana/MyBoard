@@ -1,5 +1,6 @@
 package org.mbg.myboard2;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -22,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -42,6 +44,13 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
     //private int imgSet;
     FirebaseFirestore db;
     String UserEmail;
+    private TextView gGenre;
+    private TextView gNum;
+    private TextView gTime;
+    private TextView gSys;
+    private ImageButton gYou;
+    private TextView YoutubeText;
+    private ImageView iv;
 
 
     // Provide a suitable constructor (depends on the kind of dataset)
@@ -62,12 +71,12 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
         public TextView textViewTag1;
         public TextView textViewTag2;
         public TextView textViewTag3;
-        public TextView textViewGtext;
+        //public TextView textViewGtext;
 
         public Button addListButton;
         public ImageView image;
-        public ImageButton youtubeButton;
-
+        //public ImageButton youtubeButton;
+        public Button buttonMore;
 
         public MyViewHolder(View v) {
             super(v);
@@ -77,11 +86,11 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
             textViewTag1 = v.findViewById(R.id.textView8);
             textViewTag2 = v.findViewById(R.id.textView10);
             textViewTag3 = v.findViewById(R.id.textView11);
-            textViewGtext= v.findViewById(R.id.textView9);
+            //textViewGtext= v.findViewById(R.id.textView9);
             addListButton=(Button)v.findViewById(R.id.addListButton);
             image=v.findViewById(R.id.imageView2);
-            youtubeButton=v.findViewById(R.id.youtubeButton);
-
+            //youtubeButton=v.findViewById(R.id.youtubeButton);
+            buttonMore=v.findViewById(R.id.buttonMore);
             //아이템 클릭 이벤트 처리
             /*
             v.setOnClickListener(new View.OnClickListener() {
@@ -147,7 +156,7 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
         holder.textViewTag1.setText(text2) ;
         holder.textViewTag2.setText(text3) ;
         holder.textViewTag3.setText(text4) ;
-        holder.textViewGtext.setText(text5) ;
+        //holder.textViewGtext.setText(text5) ;
         Glide.with(context).load(mDataset.get(position).getImgUrl()).override(150, 150).centerCrop().error(android.R.drawable.stat_notify_error)
                 .placeholder(R.drawable.ic_launcher_background).into(holder.image);
         //holder.textView2.setText((String)mDataset.get(position));
@@ -207,7 +216,104 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
 
             }
         });
+        holder.buttonMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog dialog=new Dialog(context);
+                dialog.setContentView(R.layout.view_game_likelist);
+                TextView gname =(TextView)dialog.findViewById(R.id.textView7);
+                gname.setText(text1);
 
+                gGenre =(TextView)dialog.findViewById(R.id.textView8); gGenre.setText(text2);
+                gNum =(TextView)dialog.findViewById(R.id.textView10); gNum.setText(text3);
+                gTime =(TextView)dialog.findViewById(R.id.textView11); gTime.setText(text4);
+                gSys=(TextView)dialog.findViewById(R.id.textView9); gSys.setText(text5);
+                gYou=(ImageButton)dialog.findViewById(R.id.youtubeButton);
+                YoutubeText=(TextView)dialog.findViewById(R.id.textView15);
+
+                iv=(ImageView)dialog.findViewById(R.id.imageView2);
+                Glide.with(context).load(mDataset.get(position).getImgUrl()).override(150, 150).centerCrop().error(android.R.drawable.stat_notify_error)
+                        .placeholder(R.drawable.ic_launcher_background).into(iv);
+                if(youtubeUrllink!=""){
+                    YoutubeText.setVisibility(View.VISIBLE);
+                    gYou.setVisibility(View.VISIBLE);
+                    gYou.setOnClickListener(new View.OnClickListener(){
+                        @Override
+                        public void onClick(View v){
+                            //2. 존재하므로 클릭시 url 연결
+                            Intent intent = new Intent(Intent.ACTION_VIEW,
+                                    Uri.parse(youtubeUrllink));
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            v.getContext().startActivity(intent);
+
+                        }
+                    });
+                }
+                else{
+                    YoutubeText.setVisibility(View.GONE);
+                    gYou.setVisibility(View.GONE);
+                    gYou.setOnClickListener(new View.OnClickListener(){
+                        @Override
+                        public void onClick(View v){
+                        }
+                    });
+                }
+
+                /*
+                DocumentReference docRef = db.collection("BoardGame").document(text1);
+                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                //Toast.makeText(context, "more 눌러졌엉", Toast.LENGTH_SHORT).show();
+                                gGenre.setText(document.get("genres").toString());
+                                gNum.setText(document.get("gnumbystring").toString());
+                                gTime.setText(document.get("gtimebystring").toString());
+                                gSys.setText(document.get("system").toString());
+                                Glide.with(context).load(document.get("imgUrl").toString()).override(150, 150).centerCrop().error(android.R.drawable.stat_notify_error)
+                                        .placeholder(R.drawable.ic_launcher_background).into(iv);
+                                String youtubeUrllink=document.getString("youtubeUrl");
+                                if(youtubeUrllink!=""){
+                                    YoutubeText.setVisibility(View.VISIBLE);
+                                    gYou.setVisibility(View.VISIBLE);
+                                    gYou.setOnClickListener(new View.OnClickListener(){
+                                        @Override
+                                        public void onClick(View v){
+                                            //2. 존재하므로 클릭시 url 연결
+                                            Intent intent = new Intent(Intent.ACTION_VIEW,
+                                                    Uri.parse(youtubeUrllink));
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            v.getContext().startActivity(intent);
+
+                                        }
+                                    });
+                                }
+                                else{
+                                    YoutubeText.setVisibility(View.GONE);
+                                    gYou.setVisibility(View.GONE);
+                                    gYou.setOnClickListener(new View.OnClickListener(){
+                                        @Override
+                                        public void onClick(View v){
+                                        }
+                                    });
+                                }
+
+                            } else {
+                                // Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            //Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });*/
+
+                dialog.show();
+
+            }
+        });
+        /*
         //1. null 이 아니면 이미지 버튼 보여주기
         if(youtubeUrllink!=""){
             holder.youtubeButton.setVisibility(View.VISIBLE);
@@ -230,7 +336,7 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
                 public void onClick(View v){
                 }
             });
-        }
+        }*/
 
     }
 

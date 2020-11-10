@@ -179,29 +179,41 @@ public class LoginActivity extends AppCompatActivity {
 
     //사용자가 앱에 로그인하면 다음과 같이 사용자의 이메일 주소와 비밀번호를 signInWithEmailAndPassword에 전달합니다
     private void userLogin(String email,String password){
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            //Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(LoginActivity.this, "환영합니다.",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            //Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "로그인 실패",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+        if("".equals(email)){
+            Toast.makeText(LoginActivity.this, "email을 입력해 주세요.",
+                    Toast.LENGTH_SHORT).show();
+        }
+        else if("".equals(password)){
+            Toast.makeText(LoginActivity.this, "비밀번호를 입력해 주세요",
+                    Toast.LENGTH_SHORT).show();
+        }
+        else{
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                //Log.d(TAG, "signInWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                Toast.makeText(LoginActivity.this, "환영합니다.",
+                                        Toast.LENGTH_SHORT).show();
+                                updateUI(user);
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                //Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                Toast.makeText(LoginActivity.this, "로그인 실패",
+                                        Toast.LENGTH_SHORT).show();
+                                updateUI(null);
+                                // ...
+                            }
+
                             // ...
                         }
+                    });
+        }
 
-                        // ...
-                    }
-                });
+
     }
 
 

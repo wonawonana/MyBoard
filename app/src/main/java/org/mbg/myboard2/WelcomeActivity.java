@@ -19,8 +19,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -36,7 +34,7 @@ public class WelcomeActivity extends AppCompatActivity {
     // Access a Cloud Firestore instance from your Activity
    FirebaseFirestore db;
 
-    private EditText nickname;
+    private EditText nicknameId;
     private CheckBox A1;    //게임장르-전체게임
     private CheckBox A2;    //전략게임
     private CheckBox A3;    //테마 집중형 게임
@@ -60,9 +58,9 @@ public class WelcomeActivity extends AppCompatActivity {
         //여기부터 제가 실험을 하나 좀 해보겠습니다.
         db = FirebaseFirestore.getInstance();
 
-        nickname=findViewById(R.id.nickname);
+        nicknameId=findViewById(R.id.nicknameId);
 
-        A1=findViewById(R.id.checkBoxA1);
+        //A1=findViewById(R.id.checkBoxA1);
         A2=findViewById(R.id.checkBoxA2);
         A3=findViewById(R.id.checkBoxA3);
         A4=findViewById(R.id.checkBoxA4);
@@ -71,7 +69,7 @@ public class WelcomeActivity extends AppCompatActivity {
         A7=findViewById(R.id.checkBoxA7);
         A8=findViewById(R.id.checkBoxA8);
         A9=findViewById(R.id.checkBoxA9);
-        A10=findViewById(R.id.checkBoxA10);
+        //A10=findViewById(R.id.checkBoxA10);
 
         //textView6=findViewById(R.id.textView6);
 
@@ -81,30 +79,29 @@ public class WelcomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //회원 정보가 서버로 들어갑니다
-                ArrayList tagGenre=new ArrayList();
-                if(A1.isChecked())   //체크 박스가 체크 된 경우
-                    tagGenre.add(A1.getText().toString());
-                if(A2.isChecked())   //체크 박스가 체크 된 경우
-                    tagGenre.add(A2.getText().toString());
-                if(A3.isChecked())   //체크 박스가 체크 된 경우
-                    tagGenre.add(A3.getText().toString());
-                if(A4.isChecked())   //체크 박스가 체크 된 경우
-                    tagGenre.add(A4.getText().toString());
-                if(A5.isChecked())   //체크 박스가 체크 된 경우
-                    tagGenre.add(A5.getText().toString());
-                if(A6.isChecked())   //체크 박스가 체크 된 경우
-                    tagGenre.add(A6.getText().toString());
-                if(A7.isChecked())   //체크 박스가 체크 된 경우
-                    tagGenre.add(A7.getText().toString());
-                if(A8.isChecked())   //체크 박스가 체크 된 경우
-                    tagGenre.add(A8.getText().toString());
-                if(A9.isChecked())   //체크 박스가 체크 된 경우
-                    tagGenre.add(A9.getText().toString());
-                if(A10.isChecked())   //체크 박스가 체크 된 경우
-                    tagGenre.add(A10.getText().toString());
-
-                String email=getUserEmail();
-                addCustomClass(nickname.getText().toString(),email,tagGenre);
+                if("".equals(nicknameId.getText().toString()))
+                    Toast.makeText(WelcomeActivity.this,"닉네임을 입력해 주세요.",Toast.LENGTH_LONG).show();
+                else{
+                    ArrayList tagGenre=new ArrayList();
+                    if(A2.isChecked())   //체크 박스가 체크 된 경우
+                        tagGenre.add(A2.getText().toString());
+                    if(A3.isChecked())   //체크 박스가 체크 된 경우
+                        tagGenre.add(A3.getText().toString());
+                    if(A4.isChecked())   //체크 박스가 체크 된 경우
+                        tagGenre.add(A4.getText().toString());
+                    if(A5.isChecked())   //체크 박스가 체크 된 경우
+                        tagGenre.add(A5.getText().toString());
+                    if(A6.isChecked())   //체크 박스가 체크 된 경우
+                        tagGenre.add(A6.getText().toString());
+                    if(A7.isChecked())   //체크 박스가 체크 된 경우
+                        tagGenre.add(A7.getText().toString());
+                    if(A8.isChecked())   //체크 박스가 체크 된 경우
+                        tagGenre.add(A8.getText().toString());
+                    if(A9.isChecked())   //체크 박스가 체크 된 경우
+                        tagGenre.add(A9.getText().toString());
+                    String email=getUserEmail();
+                    addCustomClass(nicknameId.getText().toString(),email,tagGenre);
+                }
             }
         });
 

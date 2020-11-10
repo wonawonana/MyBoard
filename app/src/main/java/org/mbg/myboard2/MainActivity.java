@@ -29,9 +29,13 @@ public class MainActivity extends AppCompatActivity {
     FragmentProfile fragmentProfile;
     FragmentSearch fragmentSearch;
 
-   public void replaceFragment(MapView tf){
-       getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, tf).commitAllowingStateLoss();
-   }
+    public void replaceFragment(MapView tf){
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, tf).commitAllowingStateLoss();
+    }
+
+    public void replaceSearch(SearchCafe searchCafe){
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, searchCafe).commitAllowingStateLoss();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             }});*/
 
 
-         bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
         //프래그먼트 생성
         fragmentHome = new FragmentHome();
         fragmentLike = new FragmentLike();

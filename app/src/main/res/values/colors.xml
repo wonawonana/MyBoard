@@ -8,5 +8,6 @@
     <color name="green3">#79bd9a</color>
     <color name="colorStar">#3ec5f1</color>
     <color name="colorStar_base">#5F5F5F</color>
-
+    <color name="pointColor">#66CCCC</color>
+    <color name="icon_blue">#1A66F0</color>
 </resources>

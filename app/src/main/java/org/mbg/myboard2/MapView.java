@@ -1,12 +1,8 @@
 package org.mbg.myboard2;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
@@ -14,12 +10,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.MenuItemCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.google.firebase.firestore.CollectionReference;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraAnimation;
 import com.naver.maps.map.CameraUpdate;
@@ -30,13 +27,9 @@ import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
-import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.util.FusedLocationSource;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import static android.content.Intent.getIntent;
 
 public class MapView extends Fragment implements OnMapReadyCallback{
 
@@ -47,19 +40,19 @@ public class MapView extends Fragment implements OnMapReadyCallback{
     //FragmentMap에서 전달받은 데이터- 카페, 위도&경도
     static ArrayList<BoardCafe> cafe_map=new ArrayList<BoardCafe>();
     double latitude, longitude;
-    //spinner array
-    ArrayList<String> spinner_array= new ArrayList<String>();
-    //search view
-    SearchView searchView;
+    //search_map
+    String search_query="";
+
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        //지도 xml
         viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_map,container,false);
+        //사용자 현재 위치
         locationSource=new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
-        //search view
-        //searchView= viewGroup.findViewById(R.id.search_map);
         //데이터 받기
         cafe_map=getArguments().getParcelableArrayList("list");
         latitude= getArguments().getDouble("latitude", 0.0);
@@ -84,13 +77,13 @@ public class MapView extends Fragment implements OnMapReadyCallback{
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
-        CameraUpdate cameraUpdate= CameraUpdate.scrollTo(new LatLng(latitude,longitude)).animate(CameraAnimation.Fly);
+        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(latitude, longitude)).animate(CameraAnimation.Fly);
 
         /*cafe_map -> markers*/
-        ArrayList<Marker> markers=new ArrayList<Marker>();
-        for(int m=0;m<cafe_map.size();m++) {
+        ArrayList<Marker> markers = new ArrayList<Marker>();
+        for (int m = 0; m < cafe_map.size(); m++) {
             //마커 생성
-            Marker marker= new Marker();
+            Marker marker = new Marker();
             //마커 위치 지정: board_cafe y,x
             marker.setPosition(new LatLng(cafe_map.get(m).y, cafe_map.get(m).x));
             //마커 캡션 지정: board_cafe place_name
@@ -105,74 +98,76 @@ public class MapView extends Fragment implements OnMapReadyCallback{
             markers.get(m).setMap(naverMap);
         }
 
-        /*InfoWindows*/
-        //인포창 리스트
-        ArrayList<InfoWindow> list_info= new ArrayList<InfoWindow>();
-        for(int i=0;i<cafe_map.size();i++){
-            list_info.add(new InfoWindow());
-        }
-        //ViewGroup 리스트
-        ArrayList<ViewGroup> list_rootView= new ArrayList<ViewGroup>();
-        for(int i=0;i<list_info.size();i++){
-            list_rootView.add((ViewGroup) getView().findViewById(R.id.fragment_container_view_tag));
-        }
-        //pointAdapter 리스트
-        ArrayList<pointAdapter> list_pointAdapter= new ArrayList<pointAdapter>();
-        for(int i=0;i<list_info.size();i++){
-            list_pointAdapter.add(new pointAdapter(getActivity(), list_rootView.get(i),
-                    cafe_map.get(i).place_name,cafe_map.get(i).address_name, cafe_map.get(i).phone, cafe_map.get(i).place_url, i));
-        }
-        for(int i=0;i<list_info.size();i++){
-            list_info.get(i).setAdapter(list_pointAdapter.get(i));
-        }
-        //마크 클릭 시 인포 창 켜짐/ 다시 누르면 꺼짐
-        for(int i=0;i<list_info.size();i++){
+        /*마크 클릭 -> InfoWindowDialog*/
+        ArrayList<InfoWindowDialog> list_info= new ArrayList<InfoWindowDialog>();
+        FirebaseFirestore db= FirebaseFirestore.getInstance();
+        for (int i = 0; i < markers.size(); i++) {
             int finalI = i;
             markers.get(i).setOnClickListener(overlay -> {
-                Marker marker=(Marker)overlay;
-                if(marker.getInfoWindow() ==null){
-                    list_info.get(finalI).open(marker);
-                }else{
-                    list_info.get(finalI).close();
-                }
-                return true;
-            });
-        }
-
-        /*dialog*/
-
-        //인포창 클릭->별점창
-        for(int i=0;i<list_info.size();i++) {
-            int finalI = i;
-            list_info.get(i).setOnClickListener(overlay -> {
-                StarDialogFragment s = StarDialogFragment.getInstance(finalI);
+                db.collection("cafe")
+                        .document(MapView.cafe_map.get(finalI).id)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        cafeDB cafedata = document.toObject(cafeDB.class);
+                                        MapView.cafe_map.get(finalI).avg_num_game = cafedata.getStarNumGame();
+                                        MapView.cafe_map.get(finalI).avg_clean = cafedata.getStarClean();
+                                        MapView.cafe_map.get(finalI).avg_service = cafedata.getStarService();
+                                    }
+                                }
+                            }
+                        });
+                InfoWindowDialog info=InfoWindowDialog.getInfoWindowDialog(finalI,
+                        cafe_map.get(finalI).avg_num_game, cafe_map.get(finalI).avg_clean, cafe_map.get(finalI).avg_service,
+                        cafe_map.get(finalI).place_name, cafe_map.get(finalI).address_name, cafe_map.get(finalI).phone
+                );
                 //별점창 띄우기
-                s.show(getFragmentManager(), StarDialogFragment.TAG_EVENT_DIALOG);
+                info.show(getFragmentManager(), InfoWindowDialog.TAG_EVENT_DIALOG);
                 //별점 값 받아오기
                 return true;
             });
         }
-/*
-        //인포창 클릭->게임 입력창
-        for(int i=0;i<list_info.size();i++) {
-            int finalI = i;
-            list_info.get(i).setOnClickListener(overlay -> {
-                GameDialogFragment g = GameDialogFragment.getInstance(finalI);
-                //별점창 띄우기
-                g.show(getFragmentManager(), GameDialogFragment.TAG_EVENT_DIALOG);
-                //별점 값 받아오기
+        /*SearchView*/
+        //SearchView 객체
+        SearchView searchView = (SearchView) viewGroup.findViewById(R.id.search_map);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //Toast.makeText(getActivity(), "search_map: "+query, Toast.LENGTH_LONG).show();
+                search_query = query;
+
+                //MapView의 인스턴스
+                //MapView tf= new MapView();
+                SearchCafe searchCafe = new SearchCafe();
+
+                //Bundle- FragmentMap에서 MapView로 데이터 넘기기
+                Bundle bundle = new Bundle(1);
+               /* bundle.putParcelableArrayList("list", board_cafe_list);
+                bundle.putDouble("latitude", Double.parseDouble(y));
+                bundle.putDouble("longitude", Double.parseDouble(x));*/
+                bundle.putString("search_query", search_query);
+                searchCafe.setArguments(bundle);
+                //MapView로 전환
+                ((MainActivity) getActivity()).replaceSearch(searchCafe);
+
+                //CameraUpdate cameraUpdate= CameraUpdate.scrollTo(new LatLng(cafe_map.get(cafe_map.size()-1).y, cafe_map.get(cafe_map.size()-1).x)).animate(CameraAnimation.Fly);
+
                 return true;
-            });
-        }*/
+            }
 
-        /*search view*/
-        //searchView.setOnQueryTextListener(object : SearchView.onQuery);
-
-
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
 
 
     }
-
 
 
 }

@@ -2,11 +2,11 @@ package org.mbg.myboard2;
 
 public class cafeDB {
 
-    String cafeName;
-    float starClean;
-    float starNumGame;
-    float starService;
-    int count;
+    private String cafeName;
+    private float starClean;
+    private float starNumGame;
+    private float starService;
+    private int count;
 
     public cafeDB(){}
     //db에 없는 id 일때 올리는 class

@@ -7,14 +7,25 @@
     android:layout_height="match_parent"
     tools:context=".MapView">
 
-
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="com.naver.maps.map.MapFragment" />
-    <!--<FrameLayout
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />-->
+
+
+    <SearchView
+        android:id="@+id/search_map"
+        android:layout_width="360dp"
+        android:layout_height="50dp"
+        android:background="#FFFFFF"
+        android:iconifiedByDefault="false"
+        android:queryBackground="@null"
+        android:queryHint=" 카페 검색"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints"></SearchView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

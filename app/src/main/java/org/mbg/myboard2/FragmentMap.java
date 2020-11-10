@@ -22,6 +22,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +35,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -49,6 +56,7 @@ public class FragmentMap extends Fragment {
     String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     //보드카페리스트
     ArrayList<BoardCafe> board_cafe_list=new ArrayList<BoardCafe>();
+
 
     @Override
     public void onAttach(Context context){
@@ -152,6 +160,36 @@ public class FragmentMap extends Fragment {
             @Override
             protected void onPostExecute(Void result) {
                 super.onPostExecute(result);
+                FirebaseFirestore db;
+                db = FirebaseFirestore.getInstance();
+                for(int i=0;i<board_cafe_list.size();i++) {
+                    int finalI = i;
+                    db.collection("cafe").document(board_cafe_list.get(i).id)
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            cafeDB cafedata = document.toObject(cafeDB.class);
+                                            /*db에 저장된 값을 BoardCafe 인스턴스의 변수에 저장*/
+                                            board_cafe_list.get(finalI).avg_num_game = cafedata.getStarNumGame();
+                                            board_cafe_list.get(finalI).avg_clean = cafedata.getStarClean();
+                                            board_cafe_list.get(finalI).avg_service = cafedata.getStarService();
+
+                                        } else {
+                                            board_cafe_list.get(finalI).avg_num_game = 0;
+                                            board_cafe_list.get(finalI).avg_clean = 0;
+                                            board_cafe_list.get(finalI).avg_service = 0;
+                                        }
+                                    } else {
+                                    }
+                                }
+                            });
+                }
+
+
                 //MapView의 인스턴스
                 MapView tf= new MapView();
                 //Bundle- FragmentMap에서 MapView로 데이터 넘기기

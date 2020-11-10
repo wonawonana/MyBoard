@@ -21,12 +21,11 @@
             android:id="@+id/imageView6"
             android:layout_width="250dp"
             android:layout_height="100dp"
-            android:layout_marginStart="80dp"
-            android:layout_marginLeft="80dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
 
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
             app:srcCompat="@drawable/welcome_name" />
         <!-- app:layout_constraintHorizontal_bias="0.0"
@@ -36,10 +35,9 @@
             android:id="@+id/imageView22"
             android:layout_width="143dp"
             android:layout_height="94dp"
-            android:layout_marginEnd="132dp"
-            android:layout_marginRight="132dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.052"
             app:srcCompat="@drawable/dice" />
@@ -93,7 +91,7 @@
                     android:layout_weight="1" />
 
                 <EditText
-                    android:id="@+id/nickname"
+                    android:id="@+id/nicknameId"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edittextshape1"
@@ -164,37 +162,13 @@
                     android:orientation="horizontal">
 
                     <CheckBox
-                        android:id="@+id/checkBoxA1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_weight="1"
-                        android:text="전체 게임"
-                        android:textSize="12sp" />
-
-                    <CheckBox
                         android:id="@+id/checkBoxA2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="0dp"
                         android:layout_weight="1"
                         android:text="전략 게임"
-                        android:textSize="12sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:id="@+id/checkBoxA10"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_weight="1"
-                        android:text="악세사리/게임 내용물"
                         android:textSize="12sp" />
 
                     <CheckBox

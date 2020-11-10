@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 public class BoardCafe implements Parcelable{
+    //API에서 받아온 값
     String address_name;
     String phone;
     String place_name;
@@ -15,12 +16,18 @@ public class BoardCafe implements Parcelable{
     double x;
     double y;
     String id;
-    //별점
+    //별점_입력한 값(db에 쓰기)
     float star_num_game=(float)0;
     float star_clean=(float)0;
     float star_service=(float)0;
-    //게임 이름
+    //db에서 받아온 별점
+    float avg_num_game;
+    float avg_clean;
+    float avg_service;
+    //게임 이름_입력한 값(db에 쓰기)
     String input_game_name="";
+    //db에서 받아온 게임 이름
+    String db_game_name="";
 
 
 
