@@ -109,6 +109,8 @@ public class Dialog_Input extends androidx.fragment.app.DialogFragment implement
                                 cafeDB cafe=new cafeDB(MapView.cafe_map.get(i).place_name,newClean,
                                         newGameNum, newService,1, new ArrayList<>(), "", "");
                                 db.collection("cafe").document(MapView.cafe_map.get(i).id).set(cafe);
+                                //좋아요 field 추가
+                                //db.collection("cafe").document(MapView.cafe_map.get(i).id).update("likeNum",1);
                                 //Toast.makeText(getActivity(), "cafe 없어서 추가했음"+MapView.cafe_map.get(i).id, Toast.LENGTH_LONG).show();
                             }
                         } else {

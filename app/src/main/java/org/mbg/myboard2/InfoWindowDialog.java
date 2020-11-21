@@ -20,8 +20,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class InfoWindowDialog extends androidx.fragment.app.DialogFragment implements View.OnClickListener{
@@ -174,9 +176,35 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
                                         map.put("placeName", MapView.cafe_map.get(mI).place_name);
                                         map.put("addressName", MapView.cafe_map.get(mI).address_name);
                                         BoardCafe boardCafe=MapView.cafe_map.get(mI);
-                                        Item item =new Item(1,"2","3");
+                                        //Item item =new Item(1,"2","3");
                                         //mPostReference.document(MapView.cafe_map.get(mI).id).set(item);
                                         mPostReference.document(MapView.cafe_map.get(mI).id).set(boardCafe);
+
+                                        //cafe DB에 추가하지 않은 카페일때
+                                        db.collection("cafe").document(MapView.cafe_map.get(mI).id).get()
+                                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                       @Override
+                                                       public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                           if (task.isSuccessful()) {
+                                                               DocumentSnapshot document = task.getResult();
+                                                               if (document.exists()) {
+                                                                    //카페 db 에 이미 추가된 카페일때
+                                                                   //likeNum++
+                                                                   db.collection("cafe").document(MapView.cafe_map.get(mI).id).update("likeNum", FieldValue.increment(1));
+                                                               } else {
+                                                                   //카페 db 에 추가하지 않은 카페일때
+                                                                   cafeDB cafe=new cafeDB(MapView.cafe_map.get(mI).place_name,0,
+                                                                           0, 0,0, new ArrayList<>(), "", "");
+                                                                   db.collection("cafe").document(MapView.cafe_map.get(mI).id).set(cafe);
+                                                                   //좋아요 field 추가
+                                                                   db.collection("cafe").document(MapView.cafe_map.get(mI).id).update("likeNum",1);
+                                                               }
+                                                           }
+                                                           else{
+                                                               Toast.makeText(getContext(),"",Toast.LENGTH_LONG).show();
+                                                           }
+                                                       }
+                                                   });
                                         Toast.makeText(getActivity(), MapView.cafe_map.get(mI).place_name+"like list 에 추가했습니다.", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {

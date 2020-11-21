@@ -149,7 +149,7 @@ public class MapView extends Fragment implements OnMapReadyCallback, NavigationV
                         for (QueryDocumentSnapshot doc : snapshot) {    //?
                             BoardCafe likeData=(doc.toObject(BoardCafe.class));
                             mDataset.add(likeData);
-                            Toast.makeText(getContext(),"추가됨",Toast.LENGTH_SHORT).show();;
+                            //Toast.makeText(getContext(),"추가됨",Toast.LENGTH_SHORT).show();;
                         }
                         //어답터 갱신
                         mAdapter.notifyDataSetChanged();
