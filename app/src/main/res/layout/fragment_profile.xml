@@ -20,7 +20,7 @@
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
-        app:srcCompat="@drawable/myprofile_name" />
+        app:srcCompat="@drawable/my_profile" />
 
     <ImageView
         android:id="@+id/imageView4"

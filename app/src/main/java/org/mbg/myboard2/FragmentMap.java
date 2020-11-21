@@ -6,14 +6,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,11 +19,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,14 +28,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
-
-import static android.content.Context.LOCATION_SERVICE;
 
 public class FragmentMap extends Fragment {
     ViewGroup viewGroup;
@@ -69,7 +58,7 @@ public class FragmentMap extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        viewGroup = (ViewGroup) inflater.inflate(R.layout.fragmap,container,false);
+        viewGroup = (ViewGroup) inflater.inflate(R.layout.fragmentmap,container,false);
 
         if (!checkLocationServicesStatus()) {
             showDialogForLocationServiceSetting();
@@ -142,8 +131,6 @@ public class FragmentMap extends Fragment {
                                 cafe_info.getString("address_name"),
                                 cafe_info.getString("phone"),
                                 cafe_info.getString("place_name"),
-                                cafe_info.getString("place_url"),
-                                cafe_info.getString("road_address_name"),
                                 cafe_info.getDouble("x"),
                                 cafe_info.getDouble("y")
                         ));
@@ -160,6 +147,8 @@ public class FragmentMap extends Fragment {
             @Override
             protected void onPostExecute(Void result) {
                 super.onPostExecute(result);
+                //MapView mapView=
+                /*
                 FirebaseFirestore db;
                 db = FirebaseFirestore.getInstance();
                 for(int i=0;i<board_cafe_list.size();i++) {
@@ -173,7 +162,8 @@ public class FragmentMap extends Fragment {
                                         DocumentSnapshot document = task.getResult();
                                         if (document.exists()) {
                                             cafeDB cafedata = document.toObject(cafeDB.class);
-                                            /*db에 저장된 값을 BoardCafe 인스턴스의 변수에 저장*/
+                                            //db에 저장된 값을 BoardCafe 인스턴스의 변수에 저장
+
                                             board_cafe_list.get(finalI).avg_num_game = cafedata.getStarNumGame();
                                             board_cafe_list.get(finalI).avg_clean = cafedata.getStarClean();
                                             board_cafe_list.get(finalI).avg_service = cafedata.getStarService();
@@ -187,19 +177,22 @@ public class FragmentMap extends Fragment {
                                     }
                                 }
                             });
-                }
+                }*/
 
 
+                //MapView.cafe_map= board_cafe_list;
                 //MapView의 인스턴스
-                MapView tf= new MapView();
+                MapView mapView= new MapView();
+                //MapTemp tf=new MapTemp();
                 //Bundle- FragmentMap에서 MapView로 데이터 넘기기
                 Bundle bundle=new Bundle(3);
+                //bundle.putParcelableArrayList("list", board_cafe_list);
                 bundle.putParcelableArrayList("list", board_cafe_list);
                 bundle.putDouble("latitude", Double.parseDouble(y));
                 bundle.putDouble("longitude", Double.parseDouble(x));
-                tf.setArguments(bundle);
+                mapView.setArguments(bundle);
                 //MapView로 전환
-                ((MainActivity)getActivity()).replaceFragment(tf);
+                ((MainActivity)getActivity()).replaceFragmentMaptoMapView(mapView);
 
             }
         }

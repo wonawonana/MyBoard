@@ -113,8 +113,9 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:backgroundTint="@color/icon_blue"
-            android:text="별점 입력"
             android:textColor="@android:color/white"
+            android:text="별점 입력"
+
             android:textSize="20sp" />
 
         <LinearLayout
@@ -123,62 +124,41 @@
             android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
-            <!-- <View
-                 android:id="@+id/view8"
-                 android:layout_width="wrap_content"
-                 android:layout_height="10dp"
-                 android:layout_weight="1" />
-
-             <TextView
-                 android:id="@+id/input_game_name"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_gravity="center"
-                 android:text="게임 입력"
-                 android:textSize="20sp"
-                 android:textStyle="bold" />
-
-             <View
-                 android:id="@+id/view9"
-                 android:layout_width="wrap_content"
-                 android:layout_height="10dp"
-                 android:layout_weight="1" />-->
-
         </LinearLayout>
 
+        <!--
+                <EditText
+                    android:id="@+id/gameName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="10dp"
+                    android:ems="10"
+                    android:hint="게임 이름"
+                    android:inputType="textPersonName" />
 
-        <EditText
-            android:id="@+id/gameName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
-            android:ems="10"
-            android:hint="게임 이름"
-            android:inputType="textPersonName" />
+                <Button
+                    android:id="@+id/button_game_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:backgroundTint="@color/colorStar"
+                    android:text="게임 입력"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/button_game_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:backgroundTint="@color/icon_blue"
-            android:text="게임 입력"
-            android:textColor="@android:color/white"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/game_name_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="20dp"
-            android:layout_weight="1"
-            android:text="*인증된 사용자만 입력할 수 있습니다."
-            android:textSize="10sp" />
+                <TextView
+                    android:id="@+id/game_name_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="1"
+                    android:text="*인증된 사용자만 입력할 수 있습니다."
+                    android:textSize="10sp" />-->
 
     </LinearLayout>
 

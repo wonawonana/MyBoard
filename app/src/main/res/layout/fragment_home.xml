@@ -16,12 +16,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="200dp"
+                android:layout_height="70dp"
+                app:srcCompat="@drawable/myboard_title3" />
+<!--
             <TextView
                 android:id="@+id/textView24"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="MyBoard"
-                android:textSize="36sp" />
+                android:textSize="36sp" />-->
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -53,6 +59,7 @@
                 android:orientation="horizontal">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/infoLayout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_weight="1"
@@ -89,6 +96,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/likeLayout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_weight="1"
@@ -107,12 +115,11 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/textView21"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="인기 보드게임"
-                android:textSize="24sp" />
+            <ImageView
+                android:id="@+id/imageView12"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                app:srcCompat="@drawable/top5_name" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -120,51 +127,135 @@
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                    <View
-                        android:id="@+id/view18"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                    <LinearLayout
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/edittextshape3" />
+                        android:orientation="vertical"
+                        >
 
-                    <View
-                        android:id="@+id/view22"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/edittextshape3" />
+                        <ImageButton
+                            android:id="@+id/GameButton1"
+                            android:layout_width="match_parent"
+                            android:layout_height="130dp"
+                            android:background="#FFFFFF"
+                            android:scaleType="fitStart"
+                            app:srcCompat="@drawable/dice_onlyone" />
 
-                    <View
-                        android:id="@+id/view21"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/edittextshape3" />
+                        <TextView
+                            android:id="@+id/GameName1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="TextView"
+                            android:textSize="14sp" />
+                    </LinearLayout>
 
-                    <View
-                        android:id="@+id/view20"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/edittextshape3" />
+                    <LinearLayout
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="vertical">
 
-                    <View
-                        android:id="@+id/view19"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/edittextshape3" />
+                        <ImageButton
+                            android:id="@+id/GameButton2"
+                            android:layout_width="match_parent"
+                            android:layout_height="130dp"
+                            android:background="#FFFFFF"
+                            android:scaleType="fitStart"
+                            app:srcCompat="@drawable/dice_onlyone" />
+
+                        <TextView
+                            android:id="@+id/GameName2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="TextView"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="vertical">
+
+                        <ImageButton
+                            android:id="@+id/GameButton3"
+                            android:layout_width="match_parent"
+                            android:layout_height="130dp"
+                            android:background="#FFFFFF"
+                            android:scaleType="fitStart"
+                            app:srcCompat="@drawable/dice_onlyone" />
+
+                        <TextView
+                            android:id="@+id/GameName3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="TextView"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="vertical">
+
+                        <ImageButton
+                            android:id="@+id/GameButton4"
+                            android:layout_width="match_parent"
+                            android:layout_height="130dp"
+                            android:background="#FFFFFF"
+                            android:scaleType="fitStart"
+                            app:srcCompat="@drawable/dice_onlyone" />
+
+                        <TextView
+                            android:id="@+id/GameName4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="TextView"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="vertical">
+
+                        <ImageButton
+                            android:id="@+id/GameButton5"
+                            android:layout_width="match_parent"
+                            android:layout_height="130dp"
+                            android:background="#FFFFFF"
+                            android:scaleType="fitStart"
+                            app:srcCompat="@drawable/dice_onlyone" />
+
+                        <TextView
+                            android:id="@+id/GameName5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="TextView"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <TextView
-                android:id="@+id/textView26"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="인기 보드게임 카페"
-                android:textSize="24sp" />
+            <ImageView
+                android:id="@+id/imageView13"
+                android:layout_width="190dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="3dp"
+                app:srcCompat="@drawable/top_board_cafe" />
         </LinearLayout>
     </ScrollView>
 

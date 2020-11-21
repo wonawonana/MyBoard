@@ -21,12 +21,13 @@ public class GameData {
     private String system;
     private String imgUrl;
     private String youtubeUrl;
+    private String gameUrl;
 
     public GameData(){}
 
     public GameData(String genre, String genres, String gnameENG, String gnameKOR, ArrayList<Integer> gnum, String gnumbystring,
                     boolean gtime30_60, boolean gtime60_90, boolean gtime90_120, String gtimebystring,
-                    boolean gtimeless30, boolean gtimemore120, String system,String imgUrl,String youtubeUrl){
+                    boolean gtimeless30, boolean gtimemore120, String system,String imgUrl,String youtubeUrl,String gameUrl){
         this.genre=genre;
         this.genres=genres;
         this.gnameENG=gnameENG;
@@ -42,6 +43,7 @@ public class GameData {
         this.system=system;
         this.imgUrl=imgUrl;
         this.youtubeUrl=youtubeUrl;
+        this.gameUrl=gameUrl;
     }
 
 
@@ -60,5 +62,6 @@ public class GameData {
     public String getSystem(){return system;}
     public String getImgUrl(){return imgUrl;}
     public String getYoutubeUrl(){return youtubeUrl;}
+    public String getGameUrl(){return gameUrl;}
 
 }

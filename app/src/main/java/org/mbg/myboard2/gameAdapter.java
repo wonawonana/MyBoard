@@ -91,18 +91,7 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
             image=v.findViewById(R.id.imageView2);
             //youtubeButton=v.findViewById(R.id.youtubeButton);
             buttonMore=v.findViewById(R.id.buttonMore);
-            //아이템 클릭 이벤트 처리
-            /*
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // TODO : process click event.
-                    int pos = getAdapterPosition() ;
-                    if (pos != RecyclerView.NO_POSITION) {
-                        //click event
-                    }
-                }
-            });*/
+
         }
     }
 
@@ -140,6 +129,7 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
         final String text4 = (String) mDataset.get(position).getGtimebystring();  //게임 시간
         String text5 = (String) mDataset.get(position).getSystem();     //시스템
         String youtubeUrllink=(String)mDataset.get(position).getYoutubeUrl();   //유튜브 링크
+        String webUrllink=(String)mDataset.get(position).getGameUrl();
 
         final String textGenre=(String) mDataset.get(position).getGenre();
         //final List listTime=new ArrayList<Map>();
@@ -195,11 +185,11 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
                                         //Log.d(TAG, "No such document");
                                         //각 유저마다 태그 수 추가
                                         //1. 장르 (단일 장르로 우선 한정)
-                                        TagGenrePlus(UserEmail,textGenre);
+                                       //TagGenrePlus(UserEmail,textGenre);
                                         //2. 시간
-                                        TagTimePlus(timeMap);
+                                        //TagTimePlus(timeMap);
                                         //3. 인원
-                                        TagNumPlus(gnum);
+                                        //TagNumPlus(gnum);
                                         //보드게임 likeNum ++1
                                         LikeNumPlus(text1);
 
@@ -223,6 +213,7 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
                 dialog.setContentView(R.layout.view_game_likelist);
                 TextView gname =(TextView)dialog.findViewById(R.id.textView7);
                 gname.setText(text1);
+                ImageButton weblink=(ImageButton)dialog.findViewById(R.id.imageButton2);
 
                 gGenre =(TextView)dialog.findViewById(R.id.textView8); gGenre.setText(text2);
                 gNum =(TextView)dialog.findViewById(R.id.textView10); gNum.setText(text3);
@@ -234,6 +225,13 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
                 iv=(ImageView)dialog.findViewById(R.id.imageView2);
                 Glide.with(context).load(mDataset.get(position).getImgUrl()).override(150, 150).centerCrop().error(android.R.drawable.stat_notify_error)
                         .placeholder(R.drawable.ic_launcher_background).into(iv);
+                weblink.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent =new Intent(Intent.ACTION_VIEW,Uri.parse(webUrllink));
+                        v.getContext().startActivity(intent);
+                    }
+                });
                 if(youtubeUrllink!=""){
                     YoutubeText.setVisibility(View.VISIBLE);
                     gYou.setVisibility(View.VISIBLE);

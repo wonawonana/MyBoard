@@ -50,6 +50,7 @@ public class likeAdapter extends RecyclerView.Adapter<likeAdapter.MyViewHolder> 
     private TextView YoutubeText;
 
 
+
     private ImageView iv;
 
     public likeAdapter(Context context,ArrayList<LikeData> myDataset) {
@@ -118,6 +119,7 @@ public class likeAdapter extends RecyclerView.Adapter<likeAdapter.MyViewHolder> 
                 dialog.setContentView(R.layout.view_game_likelist);
                 TextView gname =(TextView)dialog.findViewById(R.id.textView7);
                 gname.setText(text1);
+                ImageButton weblink=(ImageButton)dialog.findViewById(R.id.imageButton2);
 
                 gGenre =(TextView)dialog.findViewById(R.id.textView8);
                 gNum =(TextView)dialog.findViewById(R.id.textView10);
@@ -142,6 +144,14 @@ public class likeAdapter extends RecyclerView.Adapter<likeAdapter.MyViewHolder> 
                                 gSys.setText(document.get("system").toString());
                                 Glide.with(context).load(document.get("imgUrl").toString()).override(150, 150).centerCrop().error(android.R.drawable.stat_notify_error)
                                         .placeholder(R.drawable.ic_launcher_background).into(iv);
+                                String webUrllink=document.getString("gameUrl");
+                                weblink.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent =new Intent(Intent.ACTION_VIEW,Uri.parse(webUrllink));
+                                        v.getContext().startActivity(intent);
+                                    }
+                                });
                                 String youtubeUrllink=document.getString("youtubeUrl");
                                 if(youtubeUrllink!=""){
                                     YoutubeText.setVisibility(View.VISIBLE);

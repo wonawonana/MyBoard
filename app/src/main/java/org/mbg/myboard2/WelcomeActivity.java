@@ -296,9 +296,9 @@ public class WelcomeActivity extends AppCompatActivity {
         list.add(map);*/
         User user;
         if(tagGenre==null)
-            user=new User(email,nickname);
+            user=new User(email,nickname,null);
         else
-            user=new User(email,nickname,tagGenre);
+            user=new User(email,nickname,tagGenre,null);
         db.collection("member").document(email).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
