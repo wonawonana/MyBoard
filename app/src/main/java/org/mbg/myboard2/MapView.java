@@ -75,12 +75,15 @@ public class MapView extends Fragment implements OnMapReadyCallback, NavigationV
     private RecyclerView.LayoutManager layoutManager;
     String UserEmail;
 
+    private RecyclerView list;
+    private RecyclerView.Adapter recyclerAdapter;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         UserEmail=user.getEmail();
         //지도 xml
@@ -124,24 +127,11 @@ public class MapView extends Fragment implements OnMapReadyCallback, NavigationV
         }
         mapFragment.getMapAsync(this);
 
-        return viewGroup;
-    }
 
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        recyclerView = (RecyclerView) viewGroup.findViewById(R.id.recycler_map);
-        //사이즈 고정
-        recyclerView.setHasFixedSize(true);
-
-        // 4-1 리사이클러뷰에 레이아웃매니저 객체 지정.
-        // use a linear layout manager
+        recyclerView  = (RecyclerView)viewGroup.findViewById(R.id.recycler_map);
         layoutManager = new LinearLayoutManager(getActivity()); //원래 인자 this 임
         recyclerView.setLayoutManager(layoutManager);
         mDataset=new ArrayList<>();
-
-
-        drawerLayout.closeDrawer(GravityCompat.START);
 
         CollectionReference mPostReference =
                 (CollectionReference) db.collection("member").document(UserEmail)
@@ -165,9 +155,24 @@ public class MapView extends Fragment implements OnMapReadyCallback, NavigationV
                         mAdapter.notifyDataSetChanged();
                     }
                 });
-
         mAdapter = new cafeFavoriteAdapter(getActivity(),mDataset);
         recyclerView.setAdapter(mAdapter);
+
+        return viewGroup;
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        //recyclerView = (RecyclerView) viewGroup.findViewById(R.id.recycler_map);
+        //사이즈 고정
+        //recyclerView.setHasFixedSize(true);
+
+        // 4-1 리사이클러뷰에 레이아웃매니저 객체 지정.
+        // use a linear layout manager
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+
 
         return false;
     }
@@ -207,7 +212,7 @@ public class MapView extends Fragment implements OnMapReadyCallback, NavigationV
         }
 
 
-        db = FirebaseFirestore.getInstance();
+
         for (int i = 0; i < markers.size(); i++) {
             int finalI = i;
             markers.get(i).setOnClickListener(overlay -> {

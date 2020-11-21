@@ -15,6 +15,7 @@ public class BoardCafe implements Parcelable{
     double x;
     double y;
 
+    public BoardCafe(){}
 
     //외부에서 사용하는 생성자
     public BoardCafe(String id,String address_name, String phone, String place_name, double x, double y) {
