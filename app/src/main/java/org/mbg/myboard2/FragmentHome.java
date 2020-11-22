@@ -47,16 +47,24 @@ public class FragmentHome extends Fragment {
     private FirebaseAuth mAuth;
     //**
 
+    private final int CAFE_MAX=3;
     private ImageView TodayGameImg;
 
     private ImageButton[] imgGButton;
     private TextView[] gTextName;
     private String[] gameNameM;
+
     private String UserEmail;
     private String todayGameName;
 
+    private TextView[] txtviewCafeName;
+    private TextView[] txtviewCafeAddr;
+    private TextView[] txtviewCafePhone;
+
     private ArrayList<GameData> gameDataList;
     private GameData todayGameData;
+
+    private ArrayList<BoardCafe> boardCafeArrayList;
 
     @Nullable
     @Override
@@ -66,6 +74,7 @@ public class FragmentHome extends Fragment {
         db = FirebaseFirestore.getInstance();
         TodayGameImg=viewGroup.findViewById(R.id.imageView3);
         gameDataList=new ArrayList<GameData>();
+        boardCafeArrayList=new ArrayList<BoardCafe>();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         UserEmail=user.getEmail();
 
@@ -83,6 +92,21 @@ public class FragmentHome extends Fragment {
         gTextName[2]=viewGroup.findViewById(R.id.GameName3);
         gTextName[3]=viewGroup.findViewById(R.id.GameName4);
         gTextName[4]=viewGroup.findViewById(R.id.GameName5);
+
+        txtviewCafeName=new TextView[CAFE_MAX];
+        txtviewCafeName[0]=viewGroup.findViewById(R.id.cafeName1);
+        txtviewCafeName[1]=viewGroup.findViewById(R.id.cafeName2);
+        txtviewCafeName[2]=viewGroup.findViewById(R.id.cafeName3);
+        txtviewCafeAddr=new TextView[CAFE_MAX];
+        txtviewCafeAddr[0]=viewGroup.findViewById(R.id.cafeAddr1);
+        txtviewCafeAddr[1]=viewGroup.findViewById(R.id.cafeAddr2);
+        txtviewCafeAddr[2]=viewGroup.findViewById(R.id.cafeAddr3);
+        txtviewCafePhone=new TextView[CAFE_MAX];
+        txtviewCafePhone[0]=viewGroup.findViewById(R.id.cafePhone1);
+        txtviewCafePhone[1]=viewGroup.findViewById(R.id.cafePhone2);
+        txtviewCafePhone[2]=viewGroup.findViewById(R.id.cafePhone3);
+
+
 
         ConstraintLayout layout1=viewGroup.findViewById(R.id.infoLayout);
         layout1.setOnClickListener(new View.OnClickListener() {
@@ -104,9 +128,8 @@ public class FragmentHome extends Fragment {
         //2. top 5 게임
         showTopGame();
         clickTop5Game();
-
         //3. 인기 보드게임 카페
-
+        showTopCafe();
         //4. 최근 업데이트 된 보드게임 카페?
 
 
@@ -406,5 +429,29 @@ public class FragmentHome extends Fragment {
         db.collection("BoardGame").document(gameName).update("likeNum", FieldValue.increment(1));
     }
 
+    void showTopCafe(){
+        CollectionReference BoardRef = db.collection("cafe");
+        BoardRef.orderBy("likeNum", Query.Direction.DESCENDING).limit(CAFE_MAX)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            boardCafeArrayList.clear();
+                            int num=0;
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                //Log.d(TAG, document.getId() + " => " + document.getData());
+                                cafeDB cafeData=(document.toObject(cafeDB.class));
+                                //boardCafeArrayList.add(cafeData);
+                                txtviewCafeName[num].setText(cafeData.getCafeName());
+                                txtviewCafeAddr[num].setText(cafeData.getAddress_name());
+                                txtviewCafePhone[num++].setText(cafeData.getPhone());
+                            }
+                        } else {
+                            //Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
 
 }

@@ -194,7 +194,8 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
                                                                } else {
                                                                    //카페 db 에 추가하지 않은 카페일때
                                                                    cafeDB cafe=new cafeDB(MapView.cafe_map.get(mI).place_name,0,
-                                                                           0, 0,0, new ArrayList<>(), "", "");
+                                                                           0, 0,0, new ArrayList<>(), "", "",MapView.cafe_map.get(mI).address_name,
+                                                                           MapView.cafe_map.get(mI).phone);
                                                                    db.collection("cafe").document(MapView.cafe_map.get(mI).id).set(cafe);
                                                                    //좋아요 field 추가
                                                                    db.collection("cafe").document(MapView.cafe_map.get(mI).id).update("likeNum",1);
