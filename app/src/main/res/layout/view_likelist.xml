@@ -21,16 +21,19 @@
             android:layout_marginLeft="15dp"
             android:layout_weight="1"
             android:text="TextView"
+            android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/MoreButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/deleteButton"
+            android:layout_width="60dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="5dp"
             android:background="#00ff0000"
-            android:text="+ More Info"
-            android:textAllCaps="false" />
+            android:layout_gravity="bottom"
+            android:src="@drawable/delete_detail"
+            android:scaleType="fitCenter"/>
 
     </LinearLayout>
 <!--
@@ -47,45 +50,47 @@
     <EditText
         android:id="@+id/memoEditText"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"
+        android:layout_height="113dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="5dp"
         android:background="@drawable/memo_shape"
         android:ems="10"
         android:gravity="left"
-        android:hint="write memo here..."
+        android:hint="메모를 입력하세요"
         android:inputType="textLongMessage|textMultiLine|textPersonName"
         android:scrollbars="vertical" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="3dp">
+
+
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <Button
+        <ImageButton
+            android:id="@+id/MoreButton"
+            android:layout_width="80dp"
+            android:layout_height="20dp"
+            android:background="#00ff0000"
+            android:scaleType="fitCenter"
+            android:src="@drawable/detail_info" />
+
+
+        <ImageButton
             android:id="@+id/saveButton"
             android:layout_width="60dp"
-            android:layout_height="25dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginRight="5dp"
             android:background="#00ff0000"
-
-            android:text="Save"
-            android:textAllCaps="false"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/deleteButton"
-            android:layout_width="60dp"
-            android:layout_height="25dp"
-            android:layout_marginRight="5dp"
-            android:background="#00ff0000"
-
-            android:text="Delete"
-            android:textAllCaps="false"
-            android:textSize="14sp" />
+            android:scaleType="fitCenter"
+            android:src="@drawable/detail_check" />
 
     </LinearLayout>
 </LinearLayout>

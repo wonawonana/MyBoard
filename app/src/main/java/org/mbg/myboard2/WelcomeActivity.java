@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -20,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -47,8 +49,11 @@ public class WelcomeActivity extends AppCompatActivity {
     private CheckBox A10;
 
    private Button submitButton;
+   private String firstRecommend;
+   private String email;
 
    private TextView textView6;
+   private User userdata;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +87,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 if("".equals(nicknameId.getText().toString()))
                     Toast.makeText(WelcomeActivity.this,"닉네임을 입력해 주세요.",Toast.LENGTH_LONG).show();
                 else{
-                    ArrayList tagGenre=new ArrayList();
+                    ArrayList<String> tagGenre=new ArrayList();
                     if(A2.isChecked())   //체크 박스가 체크 된 경우
                         tagGenre.add(A2.getText().toString());
                     if(A3.isChecked())   //체크 박스가 체크 된 경우
@@ -99,36 +104,16 @@ public class WelcomeActivity extends AppCompatActivity {
                         tagGenre.add(A8.getText().toString());
                     if(A9.isChecked())   //체크 박스가 체크 된 경우
                         tagGenre.add(A9.getText().toString());
-                    String email=getUserEmail();
-                    addCustomClass(nicknameId.getText().toString(),email,tagGenre);
+
+                    email=getUserEmail();
+                    addRecommendGame(tagGenre);
                 }
             }
         });
 
     }
 
-/*
-    public String getUserid() {
-        // [START get_user_profile]
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // Name, email address, and profile photo Url
-            //String name = user.getDisplayName();
-            //String email = user.getEmail();
-            // Uri photoUrl = user.getPhotoUrl();
-            // Check if user's email is verified
-            ///boolean emailVerified = user.isEmailVerified();
-            // The user's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            //String uid2=FirebaseUser.getIdToken();
-            String uid = user.getUid();
-            return uid;
-            //String uid2=FirebaseUser.getIdToken();
-        }
-        else
-            return null;
-        // [END get_user_profile]
-    }*/
+
     public String getUserEmail() {
         // [START get_user_profile]
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -280,26 +265,57 @@ public class WelcomeActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+    void addRecommendGame(ArrayList<String> tagGenre){
+        CollectionReference gameRef=db.collection("BoardGame");
+        if(tagGenre.isEmpty()){
+            gameRef.orderBy("likeNum", Query.Direction.DESCENDING).limit(1)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    firstRecommend=document.getString("gnameKOR");
+                                }
+                            } else {
+                                //Log.d(TAG, "Error getting documents: ", task.getException());
+                            }
+                            addCustomClass(nicknameId.getText().toString(),email,tagGenre,firstRecommend);
+                        }
+                    });
+        }
+        else{
+            String firstGenre=tagGenre.get(0).toString();
+            gameRef.whereEqualTo("genre", firstGenre).orderBy("likeNum",Query.Direction.DESCENDING).limit(1)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    firstRecommend=document.getString("gnameKOR");
+                                    //Toast.makeText(getApplicationContext(),""+firstRecommend,Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                            }
+                            addCustomClass(nicknameId.getText().toString(),email,tagGenre,firstRecommend);
+                        }
+                    });
+        }
+    }
 
 
-    public void addCustomClass(String nickname, final String email, ArrayList tagGenre) {
-        // [START add_custom_class]
-        //City city = new City("Los Angeles", "CA", "USA", false, 5000000L, Arrays.asList("west_coast", "sorcal"));
-        /*List list=new ArrayList();
-        Map map =new HashMap();
-        map.put("Gmemo","이 게임은 답이 없다");
-        map.put("Gname","광기의 저택");
-        list.add(map);
-        map=new HashMap();
-        map.put("Gmemo","firestore 데이터 제대로 들어가는지 확인");
-        map.put("Gname","루미큐브");
-        list.add(map);*/
-        User user;
-        if(tagGenre==null)
-            user=new User(email,nickname,null);
-        else
-            user=new User(email,nickname,tagGenre,null);
-        db.collection("member").document(email).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+    public void addCustomClass(String nickname, final String email, ArrayList<String> tagGenre,String firstRecommend) {
+
+        CollectionReference gameRef=db.collection("BoardGame");
+        if(tagGenre.isEmpty()){
+            userdata=new User(email,nickname,firstRecommend);
+        }
+        else{
+            userdata=new User(email,nickname,tagGenre,firstRecommend);
+        }
+
+        db.collection("member").document(email).set(userdata).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(getApplicationContext(),"가입을 환영합니다!",Toast.LENGTH_LONG).show();
@@ -315,27 +331,7 @@ public class WelcomeActivity extends AppCompatActivity {
         });
 
 
-
-
-
-        /*
-        User user=new User(list,"","email.com","firestore");
-        db.collection("member").document("User").set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                //Log.d(TAG, "DocumentSnapshot successfully written!");
-                Toast.makeText(getApplicationContext(),"DocumentSnapshot successfully written!",Toast.LENGTH_LONG).show();
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //Log.w(TAG, "Error writing document", e);
-                        Toast.makeText(getApplicationContext(),"Error writing document",Toast.LENGTH_LONG).show();
-                    }
-                });
-        // [END add_custom_class]*/
-    }
+}
 
     void underCollectionTag(String email){
         Map<String,Integer> tagnumber=new HashMap<String,Integer>();
@@ -400,6 +396,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
 
     }
+
 
 
 

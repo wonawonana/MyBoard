@@ -13,12 +13,12 @@ public class User {
     //private String TodayGame;
     private String email;
     private String nickname;
-    private ArrayList tagGenre;
+    private ArrayList<String> tagGenre;
     private String recommendGame;
 
     public User(){}
 
-    public User(String email,String nickname,ArrayList tagGenre,String recommendGame){
+    public User(String email,String nickname,ArrayList<String> tagGenre,String recommendGame){
         //this.LoveGame=LoveGame;
         //this.TodayGame=TodayGame;
         this.email=email;
@@ -33,7 +33,7 @@ public class User {
         this.email=email;
         this.nickname=nickname;
         this.recommendGame=recommendGame;
-        //this.tagGenre=tagGenre;
+        this.tagGenre=new ArrayList<>();
     }
 
     /*
@@ -46,7 +46,7 @@ public class User {
     */
     public String getEmail(){ return email; }
     public String getNickname(){ return nickname; }
-    public ArrayList getTagGenre(){return tagGenre; }
+    public ArrayList<String> getTagGenre(){return tagGenre; }
     public String getRecommendGame(){return recommendGame;}
 
 }

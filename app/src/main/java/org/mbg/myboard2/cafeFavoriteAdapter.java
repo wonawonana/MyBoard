@@ -5,14 +5,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.CameraUpdate;
 
 import java.util.ArrayList;
 
@@ -23,7 +27,10 @@ public class cafeFavoriteAdapter extends RecyclerView.Adapter<cafeFavoriteAdapte
     //private int imgSet;
     FirebaseFirestore db;
     String UserEmail;
+    BoardCafe temp;
 
+
+    //생성자, 인스턴스 1개 생성
     public cafeFavoriteAdapter(Context context, ArrayList<BoardCafe> myDataset) {
         this.context=context;
         mDataset = myDataset;
@@ -39,14 +46,17 @@ public class cafeFavoriteAdapter extends RecyclerView.Adapter<cafeFavoriteAdapte
         public TextView txtCafeName; //카페 이름
         public TextView txtCafeAddr;   //카페 주소
         public Button deleteButton;
+        public ImageButton mapButton;
 
+        //생성자
         public MyViewHolder(View v) {
             super(v);
             // 뷰 객체에 대한 참조. (hold strong reference)
             // 내 생각에 이거 각 아이템 뷰 내용을 참조하는듯
-            txtCafeName = v.findViewById(R.id.textView14);
-            txtCafeAddr = v.findViewById(R.id.textView25);
+            txtCafeName = v.findViewById(R.id.place_name_search);
+            txtCafeAddr = v.findViewById(R.id.address_name_search);
             deleteButton = v.findViewById(R.id.button);
+            mapButton=(ImageButton)v.findViewById(R.id.mapButton_search);
         }
     }
 
@@ -55,8 +65,8 @@ public class cafeFavoriteAdapter extends RecyclerView.Adapter<cafeFavoriteAdapte
     //아이템 뷰를 위한 뷰홀더 객체 생성하여 리턴.
     //뷰 홀더 생성
     @Override
-    public  cafeFavoriteAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                       int viewType) {
+    public  cafeFavoriteAdapter.MyViewHolder
+    onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         //어떤 뷰? 아이템 뷰 네모네모(만들어 놓은거)
         View v = (View) LayoutInflater.from(parent.getContext())
@@ -70,13 +80,29 @@ public class cafeFavoriteAdapter extends RecyclerView.Adapter<cafeFavoriteAdapte
 
     @Override
     public void onBindViewHolder(final cafeFavoriteAdapter.MyViewHolder holder, int position){
+        String cafeId= (String) mDataset.get(position).getId();
         String cafeName = (String) mDataset.get(position).getPlace_name();
         String cafeAddr = (String) mDataset.get(position).getAddress_name();
+        BoardCafe cafe=(BoardCafe)mDataset.get(position);
+        //temp= (BoardCafe) mDataset.get(position);
+
+        //이걸 MapView로 전달하면 좋을 텐데
+        Double cafeY=(Double)mDataset.get(position).getY();
+        Double cafeX=(Double)mDataset.get(position).getX();
 
         holder.txtCafeName.setText(cafeName);
         holder.txtCafeAddr.setText(cafeAddr);
 
         //버튼 누르면 바로 해당 위치로 리턴하는걸 여기다 쓰는게 좋을 듯.
+        holder.mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapView.drawerLayout.closeDrawer(GravityCompat.START);
+                //map_ 이동
+                MapView.map.moveCamera(CameraUpdate.scrollTo(new LatLng(cafeY, cafeX)));
+                MapView.map.setMaxZoom(21);
+            }
+        });
 
         //삭제 눌렀을때
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {

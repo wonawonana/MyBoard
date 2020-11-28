@@ -147,52 +147,17 @@ public class FragmentMap extends Fragment {
             @Override
             protected void onPostExecute(Void result) {
                 super.onPostExecute(result);
-                //MapView mapView=
-                /*
-                FirebaseFirestore db;
-                db = FirebaseFirestore.getInstance();
-                for(int i=0;i<board_cafe_list.size();i++) {
-                    int finalI = i;
-                    db.collection("cafe").document(board_cafe_list.get(i).id)
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        DocumentSnapshot document = task.getResult();
-                                        if (document.exists()) {
-                                            cafeDB cafedata = document.toObject(cafeDB.class);
-                                            //db에 저장된 값을 BoardCafe 인스턴스의 변수에 저장
-
-                                            board_cafe_list.get(finalI).avg_num_game = cafedata.getStarNumGame();
-                                            board_cafe_list.get(finalI).avg_clean = cafedata.getStarClean();
-                                            board_cafe_list.get(finalI).avg_service = cafedata.getStarService();
-
-                                        } else {
-                                            board_cafe_list.get(finalI).avg_num_game = 0;
-                                            board_cafe_list.get(finalI).avg_clean = 0;
-                                            board_cafe_list.get(finalI).avg_service = 0;
-                                        }
-                                    } else {
-                                    }
-                                }
-                            });
-                }*/
-
-
-                //MapView.cafe_map= board_cafe_list;
                 //MapView의 인스턴스
                 MapView mapView= new MapView();
-                //MapTemp tf=new MapTemp();
                 //Bundle- FragmentMap에서 MapView로 데이터 넘기기
                 Bundle bundle=new Bundle(3);
-                //bundle.putParcelableArrayList("list", board_cafe_list);
                 bundle.putParcelableArrayList("list", board_cafe_list);
                 bundle.putDouble("latitude", Double.parseDouble(y));
                 bundle.putDouble("longitude", Double.parseDouble(x));
                 mapView.setArguments(bundle);
+
                 //MapView로 전환
-                ((MainActivity)getActivity()).replaceFragmentMaptoMapView(mapView);
+                ((MainActivity)getActivity()).replaceFragmentMapToMapView(mapView);
 
             }
         }

@@ -11,14 +11,14 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="바꿀 닉네임을 입력하세요"
-        android:textSize="18dp" />
+        android:textSize="16dp" />
 
     <EditText
         android:id="@+id/nicknamechange"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="15"
-        android:hint="nickname" />
+        android:hint="Nickname" />
 
     <LinearLayout
         android:layout_width="match_parent"

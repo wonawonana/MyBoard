@@ -10,4 +10,15 @@
     <color name="colorStar_base">#5F5F5F</color>
     <color name="pointColor">#66CCCC</color>
     <color name="icon_blue">#1A66F0</color>
+    <color name="pastel_back_yellow">#f8fbff</color>
+    <color name="pastel_blue2">#eaf4ff</color>
+    <color name="pastel_blue3">#d6eaff</color>
+    <color name="pastel_blue4">#add6ff</color>
+    <color name="pastel_blue5">#84c1ff</color>
+    <color name="back_grey">#DDE2E3</color>
+    <color name="gblue">#00b5a1</color>
+    <color name="hotPink">#ff416d</color>
+    <color name="jamong">#ce6a6b</color>
+    <color name="navy">#212e53</color>
+    <color name="bblue">#007d98 </color>
 </resources>

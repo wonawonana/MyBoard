@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,8 +49,8 @@ public class FragmentSearch extends Fragment {
     private Spinner spinnerGenre;
     private Spinner spinnerTime;
     private Spinner spinnerNum;
-    private Button searchButton;
-    private Button searchButton2;
+    private ImageButton searchButton;
+    private ImageButton searchButton2;
 
     ViewGroup viewGroup;
 
@@ -216,24 +217,6 @@ public class FragmentSearch extends Fragment {
                     });
 
 
-            /*
-            db.collection("BoardGame").whereEqualTo("gnameKOR", name)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                mDataset.clear();
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    GameData gameData=(document.toObject(GameData.class));
-                                    mDataset.add(gameData);
-                                }
-                                mAdapter.notifyDataSetChanged();
-                            } else {
-                                Toast.makeText(context,"게임이 존재하지 않습니다.",Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });*/
         }
         else{
             db.collection("BoardGame").orderBy("gnameENG").startAt(name).endAt(name+'\uf8ff')

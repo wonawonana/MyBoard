@@ -43,18 +43,15 @@
             android:background="@android:color/transparent"
             app:srcCompat="@drawable/favorite_map"
             tools:ignore="VectorDrawableCompat" />
-
-
         <Button
-            android:id="@+id/button"
+            android:id="@+id/favorite_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
-            android:background="@android:color/black"
-            android:text="DELETE"
-            android:textColor="@android:color/white"
-            android:textSize="10sp" />
+            android:background="@android:color/transparent"
+            android:text="\u2665 좋아요"
+            android:textColor="#FF1616" />
+
+
     </LinearLayout>
 
 </LinearLayout>

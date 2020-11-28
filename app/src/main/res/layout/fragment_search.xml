@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/back_grey"
     android:orientation="vertical">
 
 
@@ -16,103 +16,111 @@
         >
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
-            android:orientation="horizontal">
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
 
-            <ImageView
-                android:id="@+id/imageView10"
-                android:layout_width="200dp"
-                android:layout_height="60dp"
-                app:srcCompat="@drawable/game_search_1"
+            android:orientation="vertical">
 
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="1dp"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/editTextTextPersonName2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:background="@drawable/search_theme_1"
-                android:ems="10"
-                android:hint="name"
-                android:inputType="textPersonName"
-                android:paddingLeft="10dp"
-                android:textColor="#000000"
-                android:textColorHint="#8A000000" />
-
-            <Button
-                android:id="@+id/searchButton"
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="2dp"
-                android:background="@drawable/search_theme2"
-                android:text="search"
-                android:textColor="#000000"
-                android:textColorLink="#FFFFFF" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="4dp"
-            android:orientation="horizontal">
-
-            <Spinner
-                android:id="@+id/spinner2"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:background="@drawable/search_theme_1"
-                android:entries="@array/genre_array"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:orientation="horizontal">
 
-                android:spinnerMode="dialog"
-                android:textColor="#FFFFFF"
-                />
+                <ImageView
+                    android:id="@+id/imageView10"
+                    android:layout_width="180dp"
+                    android:layout_height="50dp"
+                    app:srcCompat="@drawable/game_search2"
 
-            <Spinner
-                android:id="@+id/spinner3"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="1dp"
-                android:layout_weight="1"
-                android:background="@drawable/search_theme3"
+                android:layout_height="35dp"
+                android:layout_marginBottom="1dp"
+                android:orientation="horizontal">
 
-                android:entries="@array/time_array"
-                android:spinnerMode="dialog" />
+                <EditText
+                    android:id="@+id/editTextTextPersonName2"
+                    android:layout_width="314dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/search_theme_1"
+                    android:ems="10"
+                    android:hint="게임이름을 입력하세요"
+                    android:inputType="textPersonName"
+                    android:paddingLeft="10dp"
+                    android:textSize="16sp" />
 
-            <Spinner
-                android:id="@+id/spinner4"
+                <ImageButton
+                    android:id="@+id/searchButton"
+                    android:layout_width="65dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="2dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/search_theme2"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/search_small"
+                    android:tint="@color/bblue" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="0dp"
-                android:layout_weight="1"
+                android:layout_height="35dp"
+                android:layout_marginBottom="4dp"
+                android:orientation="horizontal">
 
-                android:background="@drawable/search_theme3"
-                android:entries="@array/num_array"
-                android:spinnerMode="dialog" />
+                <Spinner
+                    android:id="@+id/spinner2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/search_theme_1"
+                    android:entries="@array/genre_array"
+                    android:spinnerMode="dialog"
 
-            <Button
-                android:id="@+id/searchButton2"
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="2dp"
-                android:background="@drawable/search_theme2"
-                android:text="search"
-                android:textColor="#000000" />
+                    android:textColor="#FFFFFF" />
 
+                <Spinner
+                    android:id="@+id/spinner3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_weight="1"
+                    android:background="@drawable/search_theme3"
+
+                    android:entries="@array/time_array"
+                    android:spinnerMode="dialog" />
+
+                <Spinner
+                    android:id="@+id/spinner4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+
+                    android:background="@drawable/search_theme4"
+                    android:entries="@array/num_array"
+                    android:spinnerMode="dialog" />
+
+                <ImageButton
+                    android:id="@+id/searchButton2"
+                    android:layout_width="65dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="2dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/search_theme2"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/search_small"
+                    android:tint="@color/bblue" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -120,7 +128,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/dice_back2"
-            android:backgroundTint="#D0D3D9"
+            android:backgroundTint="#ffffff"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

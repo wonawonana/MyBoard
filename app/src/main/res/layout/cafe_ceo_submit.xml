@@ -13,11 +13,12 @@
         android:text="보드게임 카페 사장 인증하기" />
 
     <TextView
-        android:gravity="center_horizontal"
         android:id="@+id/textView12"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="메일을 통해 본인과 카페에 대한 정보를 전송해 주세요." />
+        android:gravity="center_horizontal"
+        android:text="메일을 통해 본인과 카페에 대한 정보를 전송해 주세요."
+        android:textSize="12sp" />
 
     <View
 
@@ -109,13 +110,15 @@
             android:id="@+id/textView18"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="보드게임 카페 이름"
-            />
+            android:layout_marginLeft="8dp"
+            android:text="보드게임 카페 이름" />
 
         <EditText
             android:id="@+id/cafenameEdit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -129,12 +132,15 @@
             android:id="@+id/textView19"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
             android:text="보드게임 카페 주소" />
 
         <EditText
             android:id="@+id/cafeaddressEdit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -148,12 +154,15 @@
             android:id="@+id/textView20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
             android:text="인증할 전화번호" />
 
         <EditText
             android:id="@+id/telleEdit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -167,8 +176,9 @@
             android:id="@+id/textView14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_gravity="center_vertical"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="1"
             android:text="사업자 등록증 이미지 첨부하기" />
 
         <ImageButton
@@ -195,7 +205,8 @@
         android:id="@+id/textView13"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text='확인 후 "인증 완료" 상태가 되면 카페에 대한 게임 정보를 입력하실 수 있습니다.' />
+        android:text='확인 후 "인증 완료" 상태가 되면 카페에 대한 게임 정보를 입력하실 수 있습니다.'
+        android:textSize="12sp" />
 
     <Button
         android:id="@+id/button4"

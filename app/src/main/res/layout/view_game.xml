@@ -37,6 +37,7 @@
                 android:layout_height="wrap_content"
                 android:text="TextView"
                 android:textSize="20sp"
+                android:textColor="#000000"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -131,11 +132,13 @@
                         -->
 
                     <Button
-                        android:id="@+id/buttonMore"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/addListButton"
+                        android:layout_width="70dp"
                         android:layout_height="30dp"
+                        android:layout_gravity="right"
+                        android:layout_marginRight="2dp"
                         android:background="#00ff0000"
-                        android:text="+ More Info"
+                        android:text="\u2665 좋아요"
                         android:textAllCaps="false"
                         android:textSize="12sp" />
 
@@ -144,16 +147,17 @@
                         android:layout_height="0dp"
                         android:layout_weight="1" />
 
-                    <Button
-                        android:id="@+id/addListButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_gravity="right"
-                        android:layout_marginRight="2dp"
+                    <ImageButton
+                        android:id="@+id/buttonMore"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="70dp"
+                        android:layout_height="20dp"
                         android:background="#00ff0000"
-                        android:text="+Add to \u2665 list"
                         android:textAllCaps="false"
-                        android:textSize="12sp" />
+                        app:srcCompat="@drawable/detail_info"
+                        android:scaleType="fitStart"
+                         />
+
                 </LinearLayout>
 
             </LinearLayout>

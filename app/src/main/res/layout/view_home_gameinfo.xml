@@ -57,6 +57,7 @@
                 android:layout_marginBottom="5dp"
                 android:gravity="center_horizontal"
                 android:text="TextView"
+                android:textColor="#000000"
                 android:textSize="25sp"
                 android:textStyle="bold" />
 
@@ -241,10 +242,10 @@
                     android:id="@+id/addListButton"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:gravity="right"
                     android:layout_marginRight="2dp"
                     android:background="#00ff0000"
-                    android:text="+Add to \u2665 list"
+                    android:gravity="right"
+                    android:text="\u2665 좋아요"
                     android:textAllCaps="false"
                     android:textSize="14sp" />
             </LinearLayout>

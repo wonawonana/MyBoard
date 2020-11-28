@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -46,64 +47,93 @@ import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.naver.maps.map.util.MarkerIcons;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-public class MapView extends Fragment implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener{
-
-
+public class MapView extends Fragment implements OnMapReadyCallback{
     ViewGroup viewGroup;
-    //nav
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
-    ActionBarDrawerToggle drawerToggle;
-    Toolbar toolbar;
-
     //위치
     FusedLocationSource locationSource;
     private static final int LOCATION_PERMISSION_REQUEST_CODE=1000;
-    //FragmentMap에서 전달받은 데이터- 카페, 위도&경도
-    static ArrayList<BoardCafe> cafe_map=new ArrayList<BoardCafe>();
-    ArrayList<Marker> markers= new ArrayList<Marker>();
-    double latitude, longitude;
-    //search_map
-    String search_query="";
+    //db
     FirebaseFirestore db;
-    private ArrayList<BoardCafe> mDataset;
+    String UserEmail;
+    //navigation view
+    NavigationView navigationView;
+    ActionBarDrawerToggle drawerToggle;
+    private RecyclerView list;
+    private RecyclerView.Adapter recyclerAdapter;
+
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    String UserEmail;
+    Toolbar toolbar;
+    SearchView searchView;
+    //search_map
+    String search_query="";
 
-    private RecyclerView list;
-    private RecyclerView.Adapter recyclerAdapter;
+    /*static*/
+    //favorite
+    static private ArrayList<BoardCafe> mDataset;
+    static ArrayList<BoardCafe> mDataset_marker;
+    static ArrayList<Marker> markers_favorite;
+    //static ArrayList<InfoWindowDialog_favorite> infoWindowDialogs_favorite;
+    //NaverMap 객체
+    static NaverMap map;
+    //FragmentMap에서 전달받은 데이터- 카페, 위도&경도
+    static  double latitude, longitude;
+    static ArrayList<BoardCafe> cafe_map=new ArrayList<BoardCafe>();
+    static ArrayList<Marker> markers;
+    static ArrayList<InfoWindowDialog> infoWindowDialogs;
+    static DrawerLayout drawerLayout;
+
+    static public ArrayList<BoardCafe> get_mDataset(){
+        return  mDataset;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        /*db*/
         db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         UserEmail=user.getEmail();
-        //지도 xml
-        viewGroup = (ViewGroup) inflater.inflate(R.layout.map,container,false);
-        /*FragmentMap*/
-        //데이터 받기
-        cafe_map=getArguments().getParcelableArrayList("list");
-        latitude= getArguments().getDouble("latitude", 0.0);
-        longitude=getArguments().getDouble("longitude",0.0);
 
-        /*nav*/
-        //Toolbar
+        viewGroup = (ViewGroup) inflater.inflate(R.layout.map,container,false);
+        /*drawerLayout: main_content & navigation view*/
+        drawerLayout = (DrawerLayout) viewGroup.findViewById(R.id.dl_main_drawer_root);
+        /*main_content*/
         toolbar=(Toolbar) viewGroup.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_favorite_24);
-        //drawer
-        drawerLayout = (DrawerLayout) viewGroup.findViewById(R.id.dl_main_drawer_root);
-        //nav
+        //search_view
+        searchView=(SearchView)viewGroup.findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Search search= new Search(query, getActivity(), getChildFragmentManager());
+                try {
+                    search.searchBoardCafeData();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+
+        });
+
+        /*navigation view*/
         navigationView = (NavigationView) viewGroup.findViewById(R.id.nv_main_navigation_root) ;
         drawerToggle = new ActionBarDrawerToggle(
                 getActivity(),
@@ -113,26 +143,12 @@ public class MapView extends Fragment implements OnMapReadyCallback, NavigationV
                 R.string.drawer_close
         );
         drawerLayout.addDrawerListener(drawerToggle);
-        navigationView.setNavigationItemSelectedListener(this);
-
-
-        //사용자 현재 위치
-        locationSource=new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
-        //네이버지도
-        FragmentManager fm = getChildFragmentManager();
-        MapFragment mapFragment = (MapFragment)fm.findFragmentById(R.id.map);
-        if (mapFragment == null) {
-            mapFragment = MapFragment.newInstance();
-            fm.beginTransaction().add(R.id.map, mapFragment).commit();
-        }
-        mapFragment.getMapAsync(this);
-
-
+        //리사이클러뷰
         recyclerView  = (RecyclerView)viewGroup.findViewById(R.id.recycler_map);
         layoutManager = new LinearLayoutManager(getActivity()); //원래 인자 this 임
         recyclerView.setLayoutManager(layoutManager);
+        //mDataset: 좋아요한 카페 리스트, ArrayList<BoardCafe>
         mDataset=new ArrayList<>();
-
         CollectionReference mPostReference =
                 (CollectionReference) db.collection("member").document(UserEmail)
                         .collection("LikeCafe");
@@ -158,36 +174,36 @@ public class MapView extends Fragment implements OnMapReadyCallback, NavigationV
         mAdapter = new cafeFavoriteAdapter(getActivity(),mDataset);
         recyclerView.setAdapter(mAdapter);
 
+        /*데이터 받기*/
+        cafe_map=getArguments().getParcelableArrayList("list");
+        latitude= getArguments().getDouble("latitude", 0.0);
+        longitude=getArguments().getDouble("longitude",0.0);
+        /*네이버지도*/
+        //사용자 현재 위치
+        locationSource=new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+        FragmentManager fm = getChildFragmentManager();
+        MapFragment mapFragment = (MapFragment)fm.findFragmentById(R.id.map);
+        if (mapFragment == null) {
+            mapFragment = MapFragment.newInstance();
+            fm.beginTransaction().add(R.id.map, mapFragment).commit();
+        }
+        mapFragment.getMapAsync(this);
         return viewGroup;
-    }
-
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        //recyclerView = (RecyclerView) viewGroup.findViewById(R.id.recycler_map);
-        //사이즈 고정
-        //recyclerView.setHasFixedSize(true);
-
-        // 4-1 리사이클러뷰에 레이아웃매니저 객체 지정.
-        // use a linear layout manager
-
-        drawerLayout.closeDrawer(GravityCompat.START);
-
-
-        return false;
     }
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
+        //NaverMap 객체
+        map=naverMap;
         /*사용자위치*/
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
-        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(latitude, longitude)).animate(CameraAnimation.Fly);
-
+        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(latitude, longitude));
+        naverMap.moveCamera(cameraUpdate);
         /*cafe_map -> markers*/
-        ArrayList<Marker> markers = new ArrayList<Marker>();
+        markers= new ArrayList<Marker>();
         for (int m = 0; m < cafe_map.size(); m++) {
             //마커 생성
             Marker marker = new Marker();
@@ -204,15 +220,111 @@ public class MapView extends Fragment implements OnMapReadyCallback, NavigationV
             //맵에 표시
             markers.get(m).setMap(naverMap);
         }
+        /*mDataset_marker: mDataset과 cafe_map에서 겹치는 것 없애기
+        mDataset_marker=mDataset;
+        for(int d=0;d<mDataset_marker.size();d++){
+            for(int c=0;c<cafe_map.size();c++){
+                if(cafe_map.get(c).getId().equals(mDataset_marker.get(d).id)){
+                    mDataset_marker.remove(d);
+                    d--;
+                    break;
+                }
+            }
+        }*/
+
+        /*
+        markers_favorite= new ArrayList<Marker>();
+        for (int m = 0; m < mDataset.size(); m++) {
+            //마커 생성
+            Marker marker = new Marker();
+            //마커 위치 지정: board_cafe y,x
+            marker.setPosition(new LatLng(mDataset.get(m).y, mDataset.get(m).x));
+            //마커 캡션 지정: board_cafe place_name
+            marker.setCaptionText(mDataset.get(m).place_name);
+            marker.setCaptionColor(Color.rgb(0, 100, 0));
+            //마커 크기 지정
+            marker.setWidth(70);
+            marker.setHeight(100);
+            //리스트에 마커 add
+            markers_favorite.add(marker);
+            //맵에 표시
+            markers_favorite.get(m).setMap(naverMap);
 
 
-        ArrayList<InfoWindowDialog> infoWindowDialogs= new ArrayList<InfoWindowDialog>();
+
+        }*/
+
+
+        /*infoWindowDialog*/
+        infoWindowDialogs= new ArrayList<InfoWindowDialog>();
         for(int i=0;i<markers.size();i++) {
             infoWindowDialogs.add(new InfoWindowDialog(i));
         }
+        /*infoWindowDialog_favorite
+        infoWindowDialogs_favorite= new ArrayList<InfoWindowDialog_favorite>();
+        for(int i=0;i<markers_favorite.size();i++) {
+            infoWindowDialogs_favorite.add(new InfoWindowDialog_favorite(i));
+        }*/
+        /*보드게임이 입력된 카페는 빨간색으로 마킹: markers&cafe_map*/
+        for(int i=0;i<markers.size();i++) {
+            int finalI = i;
+            db.collection("cafe").document(cafe_map.get(i).id)
+                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                            @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                //Log.w(TAG, "Listen failed.", e);
+                                return;
+                            }
+
+                            if (snapshot != null && snapshot.exists()) {
+                                ArrayList<String> gamelist= (ArrayList<String>) snapshot.get("cafeGameList");
+                                if(gamelist!=null ){
+                                    if(gamelist.size()>0){
+                                        markers.get(finalI).setIcon(MarkerIcons.RED);
+
+                                    }
+                                }
 
 
+                            } else {
+                                //Log.d(TAG, "Current data: null");
+                                //data 가 null 일때
+                            }
+                        }
+                    });
+        }
+        /*보드게임이 입력된 카페는 빨간색으로 마킹: markers_favorite & mDataset
+        for(int i=0;i<markers_favorite.size();i++) {
+            int finalI = i;
+            db.collection("cafe").document(mDataset.get(i).id)
+                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                            @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                //Log.w(TAG, "Listen failed.", e);
+                                return;
+                            }
 
+                            if (snapshot != null && snapshot.exists()) {
+                                ArrayList<String> gamelist= (ArrayList<String>) snapshot.get("cafeGameList");
+                                if(gamelist!=null ){
+                                    if(gamelist.size()>0){
+                                        markers_favorite.get(finalI).setIcon(MarkerIcons.RED);
+                                    }
+                                }
+
+
+                            } else {
+                                //Log.d(TAG, "Current data: null");
+                                //data 가 null 일때
+                            }
+                        }
+                    });
+        }*/
+        /*마킹 클릭 -> db 읽어오기 -> 인포윈도우 띄우기: markers& cafe_map*/
         for (int i = 0; i < markers.size(); i++) {
             int finalI = i;
             markers.get(i).setOnClickListener(overlay -> {
@@ -225,13 +337,8 @@ public class MapView extends Fragment implements OnMapReadyCallback, NavigationV
                                 if (task.isSuccessful()) {
                                     DocumentSnapshot document = task.getResult();
                                     if (document.exists()) {
-
                                         cafeDB cafedata = document.toObject(cafeDB.class);
                                         /*infoDialog 열 때 별점 세팅*/
-                                        //db에 저장된 값을 BoardCafe 인스턴스의 변수에 저장
-                                        //cafe_map.get(finalI).avg_num_game= cafedata.getStarNumGame();
-                                        //cafe_map.get(finalI).avg_clean= cafedata.getStarClean();
-                                        //cafe_map.get(finalI).avg_service= cafedata.getStarService();
                                         infoWindowDialogs.get(finalI).ratingBar01.setRating(cafedata.getStarNumGame());
                                         infoWindowDialogs.get(finalI).textStar01.setText(
                                                 ""+(int)(cafedata.getStarNumGame()*10)/(float)10);
@@ -241,7 +348,6 @@ public class MapView extends Fragment implements OnMapReadyCallback, NavigationV
                                         infoWindowDialogs.get(finalI).ratingBar03.setRating(cafedata.getStarService());
                                         infoWindowDialogs.get(finalI).textStar03.setText(
                                                 ""+(int)(cafedata.getStarService()*10)/(float)10);
-
                                         /*infoDialog 열 때 이용시간&이용가격&게임종류 세팅*/
                                         infoWindowDialogs.get(finalI).businessHour.setText(
                                                 cafedata.getBusinessHour());
@@ -249,7 +355,7 @@ public class MapView extends Fragment implements OnMapReadyCallback, NavigationV
                                                 cafedata.getPrice());
 
                                         if(cafedata.getCafeGameList().size()!=0) {
-                                            infoWindowDialogs.get(finalI).cafeGame.setText("보드게임 종류");
+                                            //infoWindowDialogs.get(finalI).cafeGame.setText("보드게임 종류");
                                             ArrayList<String> cafeGameList= cafedata.getCafeGameList();
                                             String str_cafeGameList="";
                                             for(int i=0;i<cafeGameList.size();i++){
@@ -269,13 +375,86 @@ public class MapView extends Fragment implements OnMapReadyCallback, NavigationV
                         });
 
                 infoWindowDialogs.get(finalI).show(getFragmentManager(), InfoWindowDialog.TAG_EVENT_DIALOG);
+
                 return false;
             });
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /*마킹 클릭 -> db 읽어오기 -> 인포윈도우 띄우기: markers_favorite & mDataset
+        for (int i = 0; i < markers_favorite.size(); i++) {
+            int finalI = i;
+            markers_favorite.get(i).setOnClickListener(overlay -> {
+                //setRating
+                db.collection("cafe").document(mDataset.get(finalI).id)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        cafeDB cafedata = document.toObject(cafeDB.class);
+                                        /*infoDialog 열 때 별점 세팅
+                                        infoWindowDialogs_favorite.get(finalI).ratingBar01.setRating(cafedata.getStarNumGame());
+                                        infoWindowDialogs_favorite.get(finalI).textStar01.setText(
+                                                ""+(int)(cafedata.getStarNumGame()*10)/(float)10);
+                                        infoWindowDialogs_favorite.get(finalI).ratingBar02.setRating(cafedata.getStarClean());
+                                        infoWindowDialogs_favorite.get(finalI).textStar02.setText(
+                                                ""+(int)(cafedata.getStarClean()*10)/(float)10);
+                                        infoWindowDialogs_favorite.get(finalI).ratingBar03.setRating(cafedata.getStarService());
+                                        infoWindowDialogs_favorite.get(finalI).textStar03.setText(
+                                                ""+(int)(cafedata.getStarService()*10)/(float)10);
+                                        /*infoDialog 열 때 이용시간&이용가격&게임종류 세팅
+                                        infoWindowDialogs_favorite.get(finalI).businessHour.setText(
+                                                cafedata.getBusinessHour());
+                                        infoWindowDialogs_favorite.get(finalI).price.setText(
+                                                cafedata.getPrice());
+
+                                        if(cafedata.getCafeGameList().size()!=0) {
+                                            //infoWindowDialogs.get(finalI).cafeGame.setText("보드게임 종류");
+                                            ArrayList<String> cafeGameList= cafedata.getCafeGameList();
+                                            String str_cafeGameList="";
+                                            for(int i=0;i<cafeGameList.size();i++){
+                                                str_cafeGameList+=cafeGameList.get(i)+"\n";
+                                            }
+                                            infoWindowDialogs_favorite.get(finalI).cafeGameList.setText(
+                                                    str_cafeGameList
+                                            );
+                                        }
+
+                                    } else {
+
+                                    }
+                                } else {
+                                }
+                            }
+                        });
+
+                infoWindowDialogs_favorite.get(finalI).show(getFragmentManager(), InfoWindowDialog.TAG_EVENT_DIALOG);
+
+                return false;
+            });
+        }*/
+
     }
-
-
 
 
 }

@@ -67,9 +67,9 @@ public class likeAdapter extends RecyclerView.Adapter<likeAdapter.MyViewHolder> 
         // each data item is just a string in this case
         public TextView textViewGname; //게임 이름
         public TextView textViewMemo;   //게임 메모
-        public Button saveButton;
-        public Button deleteButton;
-        public Button moreButton;
+        public ImageButton saveButton;
+        public ImageButton deleteButton;
+        public ImageButton moreButton;
 
 
         public MyViewHolder(View v) {

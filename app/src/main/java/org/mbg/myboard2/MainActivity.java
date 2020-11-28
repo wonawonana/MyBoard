@@ -29,18 +29,12 @@ public class MainActivity extends AppCompatActivity {
     FragmentProfile fragmentProfile;
     FragmentSearch fragmentSearch;
 
-    public void replaceFragmentMaptoMapView(MapView mapView){
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, mapView).commitAllowingStateLoss();
+    //static
+    static MapView map_view;
+    public void replaceFragmentMapToMapView(MapView mapView){
+        map_view=mapView;
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, map_view).commitAllowingStateLoss();
     }
-
-    public void replaceFragment(MapView tf){
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, tf).commitAllowingStateLoss();
-    }
-
-    /*
-    public void replaceSearch(SearchCafe searchCafe){
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, searchCafe).commitAllowingStateLoss();
-    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

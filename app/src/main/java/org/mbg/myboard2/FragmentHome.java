@@ -38,6 +38,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class FragmentHome extends Fragment {
     ViewGroup viewGroup;
@@ -78,7 +79,6 @@ public class FragmentHome extends Fragment {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         UserEmail=user.getEmail();
 
-        todayGameName="모두의 마블 베이직";
 
         imgGButton=new ImageButton[5];
         imgGButton[0]=viewGroup.findViewById(R.id.GameButton1);
@@ -124,7 +124,7 @@ public class FragmentHome extends Fragment {
 
         gameNameM=new String[5];
         //1. 오늘의 게임
-        showTodayGame();
+        setTodayGame();
         //2. top 5 게임
         showTopGame();
         clickTop5Game();
@@ -138,6 +138,21 @@ public class FragmentHome extends Fragment {
         return viewGroup;
     }
 
+    void setTodayGame(){
+        db.collection("member").document(UserEmail).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        todayGameName=document.getString("recommendGame");
+                    } else {
+                    }
+                }
+                showTodayGame();
+            }
+        });
+    }
     void showTodayGame(){
 
         db.collection("BoardGame").document(todayGameName)

@@ -76,7 +76,7 @@ public class gameAdapter extends RecyclerView.Adapter<gameAdapter.MyViewHolder> 
         public Button addListButton;
         public ImageView image;
         //public ImageButton youtubeButton;
-        public Button buttonMore;
+        public ImageButton buttonMore;
 
         public MyViewHolder(View v) {
             super(v);

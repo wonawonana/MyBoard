@@ -288,6 +288,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
+                android:text="보드게임 종류"
                 android:textColor="#1A66F0"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -321,13 +322,12 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="5dp"
             android:backgroundTint="@color/icon_blue"
-            android:text="카페 사장이신가요?"
+            android:text="카페 정보 입력"
             android:textColor="@android:color/white"
             android:textSize="15sp" />
 
 
     </LinearLayout>
 </ScrollView>
-
