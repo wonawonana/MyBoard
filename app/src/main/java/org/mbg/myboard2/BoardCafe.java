@@ -14,6 +14,7 @@ public class BoardCafe implements Parcelable{
     String place_name;
     double x;
     double y;
+    String likeNum;
 
     public BoardCafe(){}
 
@@ -27,7 +28,7 @@ public class BoardCafe implements Parcelable{
         this.y=y;
 
     }
-
+    public void setLikeNum(String likeNum){this.likeNum=likeNum;}
     public String getId(){
         return id;
     }
@@ -46,7 +47,7 @@ public class BoardCafe implements Parcelable{
     public double getY(){
         return y;
     }
-
+    public String getLikeNum(){return likeNum;}
 
 
     //Creator가 사용하는 생성자

@@ -21,4 +21,10 @@
     <color name="jamong">#ce6a6b</color>
     <color name="navy">#212e53</color>
     <color name="bblue">#007d98 </color>
+    <color name="point1">#CBD9E8</color>
+    <color name="point2">#95A5C4</color>
+    <color name="point3">#91677D</color>
+    <color name="r_point1">#E75D6E</color>
+    <color name="r_point2">#FB9F95</color>
+    <color name="r_point3">#FDDAB4</color>
 </resources>

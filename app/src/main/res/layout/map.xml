@@ -43,10 +43,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_map"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView27"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="내가 좋아요한 보드게임카페가 \n이곳에 표시됩니다."
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/recycler_map" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_map"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        tools:layout_editor_absoluteY="681dp" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
             </LinearLayout>
 
         </com.google.android.material.navigation.NavigationView>

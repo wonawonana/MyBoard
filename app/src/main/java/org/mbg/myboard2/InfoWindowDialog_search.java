@@ -1,12 +1,10 @@
 package org.mbg.myboard2;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,9 +24,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class InfoWindowDialog extends androidx.fragment.app.DialogFragment implements View.OnClickListener{
+public class InfoWindowDialog_search extends androidx.fragment.app.DialogFragment implements View.OnClickListener{
     public static final String TAG_EVENT_DIALOG="dialog_event";
-    int mI;
+    BoardCafe mSearch_result_position;
     //api
     TextView textPlaceName;
     TextView textAddress;
@@ -61,8 +59,8 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
 
 
 
-    public InfoWindowDialog(int i){
-        mI=i;
+    public InfoWindowDialog_search(BoardCafe mSearch_result_position){
+        this.mSearch_result_position=mSearch_result_position;
     }
 
     @Nullable
@@ -74,13 +72,10 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
         textPlaceName = (TextView) view.findViewById(R.id.textPlaceName);
         textAddress = (TextView) view.findViewById(R.id.textAddress);
         textPhone = (TextView) view.findViewById(R.id.textPhone);
-        textPlaceName.setText(MapView.cafe_map.get(mI).place_name);
-        if(MapView.cafe_map.get(mI).address_name.length()!=0) {
-            textAddress.setText(" "+ MapView.cafe_map.get(mI).address_name);
-        }
-        if(MapView.cafe_map.get(mI).phone.length()!=0) {
-            textPhone.setText(" "+MapView.cafe_map.get(mI).phone);
-        }
+        textPlaceName.setText(mSearch_result_position.place_name);
+        textAddress.setText(mSearch_result_position.address_name);
+        textPhone.setText(mSearch_result_position.phone);
+
         //rating
         ratingBar01= (RatingBar) view.findViewById(R.id.ratingBar01);
         ratingBar02= (RatingBar) view.findViewById(R.id.ratingBar02);
@@ -106,7 +101,7 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
             public void onClick(View view) {
                 //info 닫기
                 dismiss();
-                new Dialog_Input(mI).show(getFragmentManager(), Dialog_Input.TAG_EVENT_DIALOG);
+                new Dialog_Input_search(mSearch_result_position).show(getFragmentManager(), Dialog_Input.TAG_EVENT_DIALOG);
             }
         });
 
@@ -122,7 +117,7 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         //이 유저는 사장이 맞습니다.
-                        if(document.getString("cafeId").equals(MapView.cafe_map.get(mI).id)){
+                        if(document.getString("cafeId").equals(mSearch_result_position.id)){
                             owner.setVisibility(View.VISIBLE);
                             //해당 카페 사장이 맞습니다
                             //화면 창 띄우기
@@ -149,7 +144,7 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
             public void onClick(View view) {
                 //화면 창 띄우기
                 dismiss();
-                new Dialog_Owner(mI).show(getFragmentManager(), Dialog_Input.TAG_EVENT_DIALOG);
+                new Dialog_Owner_search(mSearch_result_position).show(getFragmentManager(), Dialog_Input.TAG_EVENT_DIALOG);
             }
         });
 
@@ -165,7 +160,7 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
                         (CollectionReference) db.collection("member").document(UserEmail)
                                 .collection("LikeCafe");
                 mPostReference
-                        .document(MapView.cafe_map.get(mI).id)
+                        .document(mSearch_result_position.id)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
@@ -178,15 +173,15 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
                                     } else {
                                         //내 컬랙션에 추가하지 않은 카페
                                         //카페 데이터 유저 db 에 추가
-                                        map.put("placeName", MapView.cafe_map.get(mI).place_name);
-                                        map.put("addressName", MapView.cafe_map.get(mI).address_name);
-                                        BoardCafe boardCafe=MapView.cafe_map.get(mI);
+                                        map.put("placeName", mSearch_result_position.place_name);
+                                        map.put("addressName", mSearch_result_position.address_name);
+                                        BoardCafe boardCafe=mSearch_result_position;
                                         //Item item =new Item(1,"2","3");
                                         //mPostReference.document(MapView.cafe_map.get(mI).id).set(item);
-                                        mPostReference.document(MapView.cafe_map.get(mI).id).set(boardCafe);
+                                        mPostReference.document(mSearch_result_position.id).set(boardCafe);
 
                                         //cafe DB에 추가하지 않은 카페일때
-                                        db.collection("cafe").document(MapView.cafe_map.get(mI).id).get()
+                                        db.collection("cafe").document(mSearch_result_position.id).get()
                                                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -195,15 +190,15 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
                                                             if (document.exists()) {
                                                                 //카페 db 에 이미 추가된 카페일때
                                                                 //likeNum++
-                                                                db.collection("cafe").document(MapView.cafe_map.get(mI).id).update("likeNum", FieldValue.increment(1));
+                                                                db.collection("cafe").document(mSearch_result_position.id).update("likeNum", FieldValue.increment(1));
                                                             } else {
                                                                 //카페 db 에 추가하지 않은 카페일때
-                                                                cafeDB cafe=new cafeDB(MapView.cafe_map.get(mI).place_name,0,
-                                                                        0, 0,0, new ArrayList<>(), "", "",MapView.cafe_map.get(mI).address_name,
-                                                                        MapView.cafe_map.get(mI).phone);
-                                                                db.collection("cafe").document(MapView.cafe_map.get(mI).id).set(cafe);
+                                                                cafeDB cafe=new cafeDB(mSearch_result_position.place_name,0,
+                                                                        0, 0,0, new ArrayList<>(), "", "",mSearch_result_position.address_name,
+                                                                        mSearch_result_position.phone);
+                                                                db.collection("cafe").document(mSearch_result_position.id).set(cafe);
                                                                 //좋아요 field 추가
-                                                                db.collection("cafe").document(MapView.cafe_map.get(mI).id).update("likeNum",1);
+                                                                db.collection("cafe").document(mSearch_result_position.id).update("likeNum",1);
                                                             }
                                                         }
                                                         else{
@@ -211,7 +206,7 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
                                                         }
                                                     }
                                                 });
-                                        Toast.makeText(getActivity(), MapView.cafe_map.get(mI).place_name+"like list 에 추가했습니다.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getActivity(), mSearch_result_position.place_name+"like list 에 추가했습니다.", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
                                     //Log.d(TAG, "get failed with ", task.getException());

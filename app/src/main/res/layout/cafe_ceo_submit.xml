@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="6dp">
 
     <TextView
-        android:gravity="center_horizontal"
         android:id="@+id/textView6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:text="보드게임 카페 사장 인증하기" />
 
     <TextView
@@ -27,7 +28,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:background="#BDBDBD" />
-<!--
+    <!--
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -65,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>-->
-<!--
+    <!--
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -93,12 +94,13 @@
         android:background="#BDBDBD" />-->
 
     <TextView
-        android:gravity="center_horizontal"
         android:id="@+id/textView17"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
         android:text="인증 정보" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -182,12 +184,12 @@
             android:text="사업자 등록증 이미지 첨부하기" />
 
         <ImageButton
-            android:scaleType="fitStart"
             android:id="@+id/imageButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginRight="10dp"
             android:background="#00ff0000"
+            android:scaleType="fitStart"
             android:tint="#000000"
             app:srcCompat="@android:drawable/ic_menu_gallery" />
     </LinearLayout>
@@ -197,7 +199,7 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="30dp"
         android:background="#BDBDBD" />
 
     <TextView
@@ -212,6 +214,9 @@
         android:id="@+id/button4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="submit" />
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/point2"
+        android:text="submit"
+        android:textColor="#ffffff" />
 
 </LinearLayout>

@@ -1,6 +1,7 @@
 package org.mbg.myboard2;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,12 +9,16 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
@@ -30,6 +35,7 @@ public class cafeFavoriteAdapter extends RecyclerView.Adapter<cafeFavoriteAdapte
     BoardCafe temp;
 
 
+
     //생성자, 인스턴스 1개 생성
     public cafeFavoriteAdapter(Context context, ArrayList<BoardCafe> myDataset) {
         this.context=context;
@@ -38,6 +44,7 @@ public class cafeFavoriteAdapter extends RecyclerView.Adapter<cafeFavoriteAdapte
         //this.imgSet=imgSet;
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         UserEmail=user.getEmail();
+
     }
 
     // 3-0 아이템 뷰를 저장하는 뷰홀더 클래스. (각 하나)
@@ -45,8 +52,9 @@ public class cafeFavoriteAdapter extends RecyclerView.Adapter<cafeFavoriteAdapte
         // each data item is just a string in this case
         public TextView txtCafeName; //카페 이름
         public TextView txtCafeAddr;   //카페 주소
-        public Button deleteButton;
+        public ImageButton deleteButton;
         public ImageButton mapButton;
+        public TextView txtCafeLikeNum;
 
         //생성자
         public MyViewHolder(View v) {
@@ -57,6 +65,7 @@ public class cafeFavoriteAdapter extends RecyclerView.Adapter<cafeFavoriteAdapte
             txtCafeAddr = v.findViewById(R.id.address_name_search);
             deleteButton = v.findViewById(R.id.button);
             mapButton=(ImageButton)v.findViewById(R.id.mapButton_search);
+            //txtCafeLikeNum=v.findViewById(R.id.textView25);
         }
     }
 
@@ -93,6 +102,9 @@ public class cafeFavoriteAdapter extends RecyclerView.Adapter<cafeFavoriteAdapte
         holder.txtCafeName.setText(cafeName);
         holder.txtCafeAddr.setText(cafeAddr);
 
+        //holder.txtCafeLikeNum.setText((String)mDataset.get(position).getLikeNum());
+
+
         //버튼 누르면 바로 해당 위치로 리턴하는걸 여기다 쓰는게 좋을 듯.
         holder.mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +115,6 @@ public class cafeFavoriteAdapter extends RecyclerView.Adapter<cafeFavoriteAdapte
                 MapView.map.setMaxZoom(21);
             }
         });
-
         //삭제 눌렀을때
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override

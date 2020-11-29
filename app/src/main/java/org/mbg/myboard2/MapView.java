@@ -79,7 +79,7 @@ public class MapView extends Fragment implements OnMapReadyCallback{
     static private ArrayList<BoardCafe> mDataset;
     static ArrayList<BoardCafe> mDataset_marker;
     static ArrayList<Marker> markers_favorite;
-    //static ArrayList<InfoWindowDialog_favorite> infoWindowDialogs_favorite;
+    static ArrayList<InfoWindowDialog_favorite> infoWindowDialogs_favorite;
     //NaverMap 객체
     static NaverMap map;
     //FragmentMap에서 전달받은 데이터- 카페, 위도&경도
@@ -111,7 +111,7 @@ public class MapView extends Fragment implements OnMapReadyCallback{
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_favorite_24);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24);
         //search_view
         searchView=(SearchView)viewGroup.findViewById(R.id.search_view);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -220,8 +220,12 @@ public class MapView extends Fragment implements OnMapReadyCallback{
             //맵에 표시
             markers.get(m).setMap(naverMap);
         }
-        /*mDataset_marker: mDataset과 cafe_map에서 겹치는 것 없애기
-        mDataset_marker=mDataset;
+        /*mDataset_marker: mDataset과 cafe_map에서 겹치는 것 없애기*/
+        //mDataset_marker=mDataset;
+        mDataset_marker=new ArrayList<>();
+        for(int a=0;a<mDataset.size();a++){
+            mDataset_marker.add(mDataset.get(a));
+        }
         for(int d=0;d<mDataset_marker.size();d++){
             for(int c=0;c<cafe_map.size();c++){
                 if(cafe_map.get(c).getId().equals(mDataset_marker.get(d).id)){
@@ -230,17 +234,16 @@ public class MapView extends Fragment implements OnMapReadyCallback{
                     break;
                 }
             }
-        }*/
-
-        /*
+        }
+        /*mDataset_marker -> markers*/
         markers_favorite= new ArrayList<Marker>();
-        for (int m = 0; m < mDataset.size(); m++) {
+        for (int m = 0; m < mDataset_marker.size(); m++) {
             //마커 생성
             Marker marker = new Marker();
             //마커 위치 지정: board_cafe y,x
-            marker.setPosition(new LatLng(mDataset.get(m).y, mDataset.get(m).x));
+            marker.setPosition(new LatLng(mDataset_marker.get(m).y, mDataset_marker.get(m).x));
             //마커 캡션 지정: board_cafe place_name
-            marker.setCaptionText(mDataset.get(m).place_name);
+            marker.setCaptionText(mDataset_marker.get(m).place_name);
             marker.setCaptionColor(Color.rgb(0, 100, 0));
             //마커 크기 지정
             marker.setWidth(70);
@@ -249,22 +252,7 @@ public class MapView extends Fragment implements OnMapReadyCallback{
             markers_favorite.add(marker);
             //맵에 표시
             markers_favorite.get(m).setMap(naverMap);
-
-
-
-        }*/
-
-
-        /*infoWindowDialog*/
-        infoWindowDialogs= new ArrayList<InfoWindowDialog>();
-        for(int i=0;i<markers.size();i++) {
-            infoWindowDialogs.add(new InfoWindowDialog(i));
         }
-        /*infoWindowDialog_favorite
-        infoWindowDialogs_favorite= new ArrayList<InfoWindowDialog_favorite>();
-        for(int i=0;i<markers_favorite.size();i++) {
-            infoWindowDialogs_favorite.add(new InfoWindowDialog_favorite(i));
-        }*/
         /*보드게임이 입력된 카페는 빨간색으로 마킹: markers&cafe_map*/
         for(int i=0;i<markers.size();i++) {
             int finalI = i;
@@ -295,10 +283,10 @@ public class MapView extends Fragment implements OnMapReadyCallback{
                         }
                     });
         }
-        /*보드게임이 입력된 카페는 빨간색으로 마킹: markers_favorite & mDataset
+        /*보드게임이 입력된 카페는 빨간색으로 마킹: markers_favorite & mDataset*/
         for(int i=0;i<markers_favorite.size();i++) {
             int finalI = i;
-            db.collection("cafe").document(mDataset.get(i).id)
+            db.collection("cafe").document(mDataset_marker.get(i).id)
                     .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                         @Override
                         public void onEvent(@Nullable DocumentSnapshot snapshot,
@@ -323,7 +311,14 @@ public class MapView extends Fragment implements OnMapReadyCallback{
                             }
                         }
                     });
-        }*/
+        }
+
+        /*infoWindowDialog*/
+        infoWindowDialogs= new ArrayList<InfoWindowDialog>();
+        for(int i=0;i<markers.size();i++) {
+            infoWindowDialogs.add(new InfoWindowDialog(i));
+        }
+
         /*마킹 클릭 -> db 읽어오기 -> 인포윈도우 띄우기: markers& cafe_map*/
         for (int i = 0; i < markers.size(); i++) {
             int finalI = i;
@@ -381,29 +376,17 @@ public class MapView extends Fragment implements OnMapReadyCallback{
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /*마킹 클릭 -> db 읽어오기 -> 인포윈도우 띄우기: markers_favorite & mDataset
+        /*infoWindowDialog_favorite*/
+        infoWindowDialogs_favorite= new ArrayList<InfoWindowDialog_favorite>();
+        for(int i=0;i<markers_favorite.size();i++) {
+            infoWindowDialogs_favorite.add(new InfoWindowDialog_favorite(i));
+        }
+        /*마킹 클릭 -> db 읽어오기 -> 인포윈도우 띄우기: markers_favorite & mDataset*/
         for (int i = 0; i < markers_favorite.size(); i++) {
             int finalI = i;
             markers_favorite.get(i).setOnClickListener(overlay -> {
                 //setRating
-                db.collection("cafe").document(mDataset.get(finalI).id)
+                db.collection("cafe").document(mDataset_marker.get(finalI).id)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
@@ -412,7 +395,7 @@ public class MapView extends Fragment implements OnMapReadyCallback{
                                     DocumentSnapshot document = task.getResult();
                                     if (document.exists()) {
                                         cafeDB cafedata = document.toObject(cafeDB.class);
-                                        /*infoDialog 열 때 별점 세팅
+                                        /*infoDialog 열 때 별점 세팅*/
                                         infoWindowDialogs_favorite.get(finalI).ratingBar01.setRating(cafedata.getStarNumGame());
                                         infoWindowDialogs_favorite.get(finalI).textStar01.setText(
                                                 ""+(int)(cafedata.getStarNumGame()*10)/(float)10);
@@ -422,23 +405,20 @@ public class MapView extends Fragment implements OnMapReadyCallback{
                                         infoWindowDialogs_favorite.get(finalI).ratingBar03.setRating(cafedata.getStarService());
                                         infoWindowDialogs_favorite.get(finalI).textStar03.setText(
                                                 ""+(int)(cafedata.getStarService()*10)/(float)10);
-                                        /*infoDialog 열 때 이용시간&이용가격&게임종류 세팅
+                                        /*infoDialog 열 때 이용시간&이용가격&게임종류 세팅*/
                                         infoWindowDialogs_favorite.get(finalI).businessHour.setText(
                                                 cafedata.getBusinessHour());
                                         infoWindowDialogs_favorite.get(finalI).price.setText(
                                                 cafedata.getPrice());
-
-                                        if(cafedata.getCafeGameList().size()!=0) {
-                                            //infoWindowDialogs.get(finalI).cafeGame.setText("보드게임 종류");
-                                            ArrayList<String> cafeGameList= cafedata.getCafeGameList();
-                                            String str_cafeGameList="";
-                                            for(int i=0;i<cafeGameList.size();i++){
-                                                str_cafeGameList+=cafeGameList.get(i)+"\n";
-                                            }
-                                            infoWindowDialogs_favorite.get(finalI).cafeGameList.setText(
-                                                    str_cafeGameList
-                                            );
+                                        ArrayList<String> cafeGameList= cafedata.getCafeGameList();
+                                        String str_cafeGameList="";
+                                        for(int i=0;i<cafeGameList.size();i++){
+                                            str_cafeGameList+=cafeGameList.get(i)+"\n";
                                         }
+                                        infoWindowDialogs_favorite.get(finalI).cafeGameList.setText(
+                                                str_cafeGameList
+                                        );
+
 
                                     } else {
 
@@ -447,12 +427,11 @@ public class MapView extends Fragment implements OnMapReadyCallback{
                                 }
                             }
                         });
-
                 infoWindowDialogs_favorite.get(finalI).show(getFragmentManager(), InfoWindowDialog.TAG_EVENT_DIALOG);
 
                 return false;
             });
-        }*/
+        }
 
     }
 

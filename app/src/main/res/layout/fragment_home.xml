@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/back_grey"
+    android:background="@color/point1"
     android:orientation="vertical"
     >
 
@@ -398,9 +398,9 @@
                             android:layout_height="30dp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="5dp"
-
                             android:layout_weight="1"
-                            app:srcCompat="@drawable/number_one" />
+                            app:srcCompat="@drawable/number_one"
+                            app:tint="#E75D6E" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -480,12 +480,12 @@
                         <ImageView
 
                             android:layout_width="70dp"
-                            android:layout_height="30dp"
+                            android:layout_height="28dp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="5dp"
-
                             android:layout_weight="1"
-                            app:srcCompat="@drawable/number_two" />
+                            app:srcCompat="@drawable/number_two"
+                            app:tint="#FB9F95" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -571,7 +571,8 @@
                             android:layout_marginLeft="5dp"
 
                             android:layout_weight="1"
-                            app:srcCompat="@drawable/number_three" />
+                            app:srcCompat="@drawable/number_three"
+                            app:tint="#FDDAB4"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"

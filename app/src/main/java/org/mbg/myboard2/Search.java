@@ -43,6 +43,9 @@ public class Search {
 
     public Search(String query, Context context, FragmentManager fragmentManager){
         mQuery=query;
+        if(!mQuery.contains("보드")){
+            mQuery= mQuery + " 보드";
+        }
         mContext=context;
         mFragmentManager=fragmentManager;
         search_result= new ArrayList<BoardCafe>();
@@ -52,6 +55,10 @@ public class Search {
 
     public void searchBoardCafeData() throws UnsupportedEncodingException {
         class searchBoardCafe extends AsyncTask<Void, Void, Void>  {
+            //검색어에 '보드' 추가하기
+
+
+
             String query_API=URLEncoder.encode(mQuery, "UTF-8");
             searchBoardCafe() throws UnsupportedEncodingException {
             }
@@ -125,11 +132,8 @@ public class Search {
             @Override
             protected void onPostExecute(Void result) {
                 super.onPostExecute(result);
-
-                /*SearchDialog searchDialog= new SearchDialog(
-                        search_result.get(0).place_name, search_result.get(0).address_name,search_result.get(0).y, search_result.get(0).x);
-               */
-                searchDialog= new SearchDialog(search_result);
+                //Toast.makeText(mContext, mQuery, Toast.LENGTH_SHORT).show();
+                searchDialog= new SearchDialog(search_result, mFragmentManager);
                 //FragmentManager fragmentManager= mContext.getFrag
                 searchDialog.show(mFragmentManager, SearchDialog.TAG_EVENT_DIALOG);
 

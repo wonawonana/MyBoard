@@ -8,16 +8,32 @@
     android:background="@android:color/white"
     android:minHeight="?attr/actionBarSize"
     app:subtitleTextColor="#673AB7"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:titleMargin="4dp">
 
     <SearchView
         android:id="@+id/search_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
+        android:background="#00ff0000"
+        android:icon="@drawable/menu_search"
         android:iconifiedByDefault="false"
-        android:queryBackground="@null"
-        android:queryHint="카페 검색" />
+        android:isScrollContainer="false"
+        android:supportsRtl="true"
+        android:queryHint="카페 검색"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always"
+        app:theme="@style/AppTheme.SearchView" />
+<!--    <SearchView-->
+<!--        android:id="@+id/search_view"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layoutDirection="rtl"-->
+<!--        android:queryHint="카페 검색"-->
+<!--        app:theme="@style/AppTheme.SearchView">-->
+
+
+
 
 
 </androidx.appcompat.widget.Toolbar>
