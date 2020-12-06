@@ -1,152 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/businessHour"
-            android:layout_width="0dp"
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_weight="5"
-            android:ems="10"
-            android:hint="영업 시간\n(ex. 11시~21시)"
-            android:inputType="textPersonName" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/button_businessHour"
-            android:layout_width="0dp"
+            <EditText
+                android:id="@+id/businessHour"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="5"
+                android:ems="10"
+                android:hint="영업 시간\n(ex. 11시~21시)"
+                android:inputType="textPersonName" />
+
+            <Button
+                android:id="@+id/button_businessHour"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="2"
+                android:backgroundTint="@color/point2"
+                android:text="수정"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="2"
-            android:backgroundTint="@color/point2"
-            android:text="입력"
-            android:textColor="@android:color/white"
-            android:textSize="15sp" />
-    </LinearLayout>
+            android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <EditText
+                android:id="@+id/price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="5"
+                android:ems="10"
+                android:hint="이용 가격\n(ex. 1시간 3000원,\n 2시간 5000원)"
+                android:inputType="textPersonName" />
 
-        <EditText
-            android:id="@+id/price"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_weight="5"
-            android:ems="10"
-            android:hint="이용 가격\n(ex. 1시간 3000원,\n 2시간 5000원)"
-            android:inputType="textPersonName" />
+            <Button
+                android:id="@+id/button_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="2"
+                android:backgroundTint="@color/point2"
+                android:text="수정"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/button_price"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="2"
-            android:backgroundTint="@color/point2"
-            android:text="입력"
-            android:textColor="@android:color/white"
-            android:textSize="15sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/gameName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_weight="5"
-            android:ems="10"
-            android:hint="보유 게임\n(ex. 쿼리도, 우노, ...)"
-            android:inputType="textPersonName" />
-
-        <Button
-            android:id="@+id/button_gameName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="2"
-            android:backgroundTint="@color/point2"
-            android:text="입력"
-            android:textColor="@android:color/white"
-            android:textSize="15sp" />
-
-    </LinearLayout>
-
-    <!--
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/price_image"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginRight="10dp"
-            android:text="이용 가격표 이미지 첨부하기" />
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/button_price_image"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:background="#00ff0000"
-            android:scaleType="fitStart"
-            android:tint="#000000"
-            app:srcCompat="@android:drawable/ic_menu_gallery" />
-    </LinearLayout>
+            <EditText
+                android:id="@+id/gameName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="5"
+                android:ems="10"
+                android:hint="보유 게임\n(ex. 쿼리도, 우노, ...)"
+                android:inputType="textPersonName" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <Button
+                android:id="@+id/button_gameName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="2"
+                android:backgroundTint="@color/point2"
+                android:text="수정"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/cafe_image"
-            android:layout_width="wrap_content"
+            android:id="@+id/textView33"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="30dp"
-            android:text="카페 이미지 첨부하기" />
+            android:layout_marginBottom="10dp"
+            android:text="* '수정'을 누르면 내용이 변경됩니다."
+            android:textStyle="bold" />
+        <!--
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/button_cafe_image"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
-            android:background="#00ff0000"
-            android:scaleType="fitStart"
-            android:tint="#000000"
-            app:srcCompat="@android:drawable/ic_menu_gallery" />
-    </LinearLayout>-->
-</LinearLayout>
+                <EditText
+                    android:id="@+id/extra"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="5"
+                    android:ems="10"
+                    android:hint="기타"
+                    android:inputType="textPersonName" />
+
+                <Button
+                    android:id="@+id/button_extra"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="2"
+                    android:backgroundTint="@color/point2"
+                    android:text="수정"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView35"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:text="카페 구조:  "
+                    android:textSize="18sp" />
+
+                <CheckBox
+                    android:id="@+id/checkBox_open"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:text="오픈형" />
+
+                <CheckBox
+                    android:id="@+id/checkBox_roon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="1"
+                    android:text="방" />
+
+            </LinearLayout>-->
+    </LinearLayout>
+
+</ScrollView>

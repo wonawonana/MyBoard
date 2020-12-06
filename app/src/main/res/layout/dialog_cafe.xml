@@ -308,7 +308,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_marginRight="10dp"
             android:backgroundTint="@color/point2"
             android:text="별점 입력"
@@ -316,13 +316,21 @@
             android:textSize="15sp"
             tools:ignore="DuplicateIds" />
 
+        <TextView
+            android:id="@+id/announce"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:text="* 사장 인증 후 카페정보 입력가능" />
+
         <Button
             android:id="@+id/button_owner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="15dp"
             android:backgroundTint="@color/point2"
             android:text="카페 정보 입력"
             android:textColor="@android:color/white"

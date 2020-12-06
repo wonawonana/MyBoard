@@ -384,6 +384,7 @@
                     android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/linear_layout_cafe1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
@@ -469,6 +470,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/linear_layout_cafe2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
@@ -555,6 +557,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/linear_layout_cafe3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
@@ -572,7 +575,7 @@
 
                             android:layout_weight="1"
                             app:srcCompat="@drawable/number_three"
-                            app:tint="#FDDAB4"/>
+                            app:tint="#FDDAB4" />
 
                         <LinearLayout
                             android:layout_width="match_parent"

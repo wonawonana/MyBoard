@@ -36,7 +36,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class Search {
     String mQuery;
     Context mContext;
-    FragmentManager mFragmentManager;
+    private FragmentManager mFragmentManager;
     ArrayList<BoardCafe> search_result;
     static SearchDialog searchDialog;
 

@@ -2,16 +2,27 @@ package org.mbg.myboard2;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.LocationManager;
+import android.media.Image;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,6 +41,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -40,6 +53,8 @@ public class FragmentMap extends Fragment {
     //위치
     private static final int LOCATION_PERMISSION_REQUEST_CODE=1000;
     private GpsTracker gpsTracker;
+    double latitude=-1;
+    double longitude=-1;
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
@@ -58,22 +73,58 @@ public class FragmentMap extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        viewGroup = (ViewGroup) inflater.inflate(R.layout.fragmentmap,container,false);
-
+        //권한 확인
         if (!checkLocationServicesStatus()) {
             showDialogForLocationServiceSetting();
         }else {
             checkRunTimePermission();
         }
-
         //GpsTracker: 현재 위치의 위도 경도 얻기
         gpsTracker = new GpsTracker(mContext);
-        double latitude = gpsTracker.getLatitude();
-        double longitude = gpsTracker.getLongitude();
+        latitude = gpsTracker.getLatitude();
+        longitude = gpsTracker.getLongitude();
 
-        //보드카페데이터 받아오기
-        getBoardCafeData(Double.toString(latitude),Double.toString(longitude),getActivity());
+        if(latitude >0 && longitude >0){
+            viewGroup = (ViewGroup) inflater.inflate(R.layout.fragmentmap,container,false);
+            //보드카페데이터 받아오기
+            getBoardCafeData(Double.toString(latitude),Double.toString(longitude),getActivity());
 
+        }
+        //install
+        else{
+            viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_map_install,container,false);
+            TextView user_location= (TextView)viewGroup.findViewById(R.id.user_location);
+            Button location_install= (Button) viewGroup.findViewById(R.id.location_install);
+            Button move_to_map=(Button)viewGroup.findViewById(R.id.move_to_map);
+            //권한 확인
+            if (!checkLocationServicesStatus()) {
+                showDialogForLocationServiceSetting();
+            }else {
+                checkRunTimePermission();
+            }
+
+            //위치확인버튼
+            location_install.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //GpsTracker: 현재 위치의 위도 경도 얻기
+                    gpsTracker = new GpsTracker(mContext);
+                    latitude = gpsTracker.getLatitude();
+                    longitude = gpsTracker.getLongitude();
+                    user_location.setText("현재 위치: "+ getCurrentAddress(latitude,longitude));
+                    move_to_map.setVisibility(View.VISIBLE);
+                }
+            });
+            //지도이동버튼
+            move_to_map.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //보드카페데이터 받아오기
+                    getBoardCafeData(Double.toString(latitude),Double.toString(longitude),getActivity());
+                }
+            });
+
+        }
         return viewGroup;
     }
 
@@ -157,7 +208,7 @@ public class FragmentMap extends Fragment {
                 mapView.setArguments(bundle);
 
                 //MapView로 전환
-                ((MainActivity)getActivity()).replaceFragmentMapToMapView(mapView);
+                ((MainActivity)mContext).replaceFragmentMapToMapView(mapView);
 
             }
         }
@@ -261,14 +312,6 @@ public class FragmentMap extends Fragment {
         if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED &&
                 hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
 
-            // 2. 이미 퍼미션을 가지고 있다면
-            // ( 안드로이드 6.0 이하 버전은 런타임 퍼미션이 필요없기 때문에 이미 허용된 걸로 인식합니다.)
-
-
-            // 3.  위치 값을 가져올 수 있음
-
-
-
         } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요합니다. 2가지 경우(3-1, 4-1)가 있습니다.
 
             // 3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우에는
@@ -290,6 +333,41 @@ public class FragmentMap extends Fragment {
             }
 
         }
+
+    }
+    public String getCurrentAddress( double latitude, double longitude) {
+
+        //지오코더... GPS를 주소로 변환
+        Geocoder geocoder = new Geocoder(mContext , Locale.getDefault());
+
+        List<Address> addresses;
+
+        try {
+
+            addresses = geocoder.getFromLocation(
+                    latitude,
+                    longitude,
+                    7);
+        } catch (IOException ioException) {
+            //네트워크 문제
+            Toast.makeText(mContext, "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show();
+            return "지오코더 서비스 사용불가";
+        } catch (IllegalArgumentException illegalArgumentException) {
+            Toast.makeText(mContext, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show();
+            return "잘못된 GPS 좌표";
+
+        }
+
+
+
+        if (addresses == null || addresses.size() == 0) {
+            Toast.makeText(mContext, "주소 미발견", Toast.LENGTH_LONG).show();
+            return "주소 미발견";
+
+        }
+
+        Address address = addresses.get(0);
+        return address.getAddressLine(0).toString()+"\n";
 
     }
 
@@ -342,12 +420,11 @@ public class FragmentMap extends Fragment {
 
     //확인하기
     public boolean checkLocationServicesStatus() {
-        /*LocationManager locationManager = (LocationManager) mContext.getSystemService();
+        LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
 
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-*/
-        return true;
+
     }
 
 

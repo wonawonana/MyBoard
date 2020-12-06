@@ -8,9 +8,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,6 +24,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
+import com.naver.maps.map.overlay.Marker;
 
 import java.util.ArrayList;
 
@@ -29,17 +32,21 @@ public class cafeFavoriteAdapter extends RecyclerView.Adapter<cafeFavoriteAdapte
 
     private ArrayList<BoardCafe> mDataset;
     private Context context;
+    private FragmentManager mFragmentManager;
     //private int imgSet;
     FirebaseFirestore db;
     String UserEmail;
     BoardCafe temp;
+    //네비게이션 바에서 이동 눌렀을 떄
+    Marker markerFavorite;
 
 
 
     //생성자, 인스턴스 1개 생성
-    public cafeFavoriteAdapter(Context context, ArrayList<BoardCafe> myDataset) {
+    public cafeFavoriteAdapter(Context context, ArrayList<BoardCafe> myDataset, FragmentManager fragmentManager) {
         this.context=context;
         mDataset = myDataset;
+        mFragmentManager=fragmentManager;
         db = FirebaseFirestore.getInstance();       //...?여기다 넣어도 되는건가?
         //this.imgSet=imgSet;
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -92,27 +99,27 @@ public class cafeFavoriteAdapter extends RecyclerView.Adapter<cafeFavoriteAdapte
         String cafeId= (String) mDataset.get(position).getId();
         String cafeName = (String) mDataset.get(position).getPlace_name();
         String cafeAddr = (String) mDataset.get(position).getAddress_name();
-        BoardCafe cafe=(BoardCafe)mDataset.get(position);
-        //temp= (BoardCafe) mDataset.get(position);
-
-        //이걸 MapView로 전달하면 좋을 텐데
         Double cafeY=(Double)mDataset.get(position).getY();
         Double cafeX=(Double)mDataset.get(position).getX();
 
         holder.txtCafeName.setText(cafeName);
         holder.txtCafeAddr.setText(cafeAddr);
-
-        //holder.txtCafeLikeNum.setText((String)mDataset.get(position).getLikeNum());
-
-
-        //버튼 누르면 바로 해당 위치로 리턴하는걸 여기다 쓰는게 좋을 듯.
+        //이동 눌렀을 때
         holder.mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //cafe_favorite.add(mDataset.get(position));
+                markerFavorite=MainActivity.map_view.cafe_to_marker(mDataset.get(position));
+                markerFavorite.setOnClickListener(overlay -> {
+                    InfoWindowDialog infoWindowDialog_cafe_favorite= MainActivity.map_view.set_InfoWindowDialog(mDataset.get(position));
+                    infoWindowDialog_cafe_favorite.show(mFragmentManager, InfoWindowDialog.TAG_EVENT_DIALOG);
+                    return false;
+                });
                 MapView.drawerLayout.closeDrawer(GravityCompat.START);
                 //map_ 이동
                 MapView.map.moveCamera(CameraUpdate.scrollTo(new LatLng(cafeY, cafeX)));
                 MapView.map.setMaxZoom(21);
+
             }
         });
         //삭제 눌렀을때

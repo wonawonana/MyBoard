@@ -25,15 +25,16 @@ import java.util.ArrayList;
 
 public class Dialog_Input extends androidx.fragment.app.DialogFragment implements View.OnClickListener {
     public static final String TAG_EVENT_DIALOG="dialog_event";
-    int i=-1;
+    //int i=-1;
+    private BoardCafe mCafe;
     RatingBar ratingBar1;
     RatingBar ratingBar2;
     RatingBar ratingBar3;
     Button button_star;
     FirebaseFirestore db;
 
-    public Dialog_Input (int cafe_i){
-        i=cafe_i;
+    public Dialog_Input(BoardCafe cafe){
+        mCafe=cafe;
     }
 
     @Nullable
@@ -75,7 +76,7 @@ public class Dialog_Input extends androidx.fragment.app.DialogFragment implement
         /*db에 별점 입력*/
         CollectionReference PostRef = (CollectionReference) db.collection("cafe");
         PostRef
-                .document(MapView.cafe_map.get(i).id)
+                .document(mCafe.id)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -97,7 +98,7 @@ public class Dialog_Input extends androidx.fragment.app.DialogFragment implement
                                 serviceAvg=serviceAvg*count+newService;
                                 serviceAvg/=(count+1);
 
-                                DocumentReference docRef=db.collection("cafe").document(MapView.cafe_map.get(i).id);
+                                DocumentReference docRef=db.collection("cafe").document(mCafe.id);
                                 docRef.update("starClean",cleanAvg);
                                 docRef.update("starNumGame",gameNumAvg);
                                 docRef.update("starService",serviceAvg);
@@ -106,11 +107,11 @@ public class Dialog_Input extends androidx.fragment.app.DialogFragment implement
                             } else {
                                 //카페 존재 안함
                                 // 추가해줌 = clean,게임많은지,서비스 ,, 각 인원
-                                cafeDB cafe=new cafeDB(MapView.cafe_map.get(i).place_name,newClean,
+                                cafeDB cafe=new cafeDB(mCafe.place_name,newClean,
                                         newGameNum, newService,1, new ArrayList<>(), "", ""
-                                        ,MapView.cafe_map.get(i).address_name,
-                                        MapView.cafe_map.get(i).phone);
-                                db.collection("cafe").document(MapView.cafe_map.get(i).id).set(cafe);
+                                        ,mCafe.address_name,
+                                        mCafe.phone);
+                                db.collection("cafe").document(mCafe.id).set(cafe);
                                 //좋아요 field 추가
                                 //db.collection("cafe").document(MapView.cafe_map.get(i).id).update("likeNum",1);
                                 //Toast.makeText(getActivity(), "cafe 없어서 추가했음"+MapView.cafe_map.get(i).id, Toast.LENGTH_LONG).show();

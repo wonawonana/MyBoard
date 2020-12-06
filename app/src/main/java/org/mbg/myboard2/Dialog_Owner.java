@@ -25,20 +25,24 @@ import java.util.ArrayList;
 
 public class Dialog_Owner extends androidx.fragment.app.DialogFragment implements View.OnClickListener {
     public static final String TAG_EVENT_DIALOG="dialog_event";
-    int mI = -1;
+    //int mI = -1;
+    private BoardCafe mCafe;
     EditText gameName;
     EditText businessHour;
     EditText price;
+    //EditText extra;
     Button button_gameNum;
     Button button_businessHour;
     Button button_price;
+    //Button button_extra;
+    //db
     FirebaseFirestore db;
     String UserEmail;
     FirebaseUser user;
 
 
-    public Dialog_Owner(int i) {
-        mI = i;
+    public Dialog_Owner(BoardCafe cafe) {
+        mCafe=cafe;
     }
 
     @Nullable
@@ -50,6 +54,7 @@ public class Dialog_Owner extends androidx.fragment.app.DialogFragment implement
         gameName= (EditText)view.findViewById(R.id.gameName);
         businessHour= (EditText)view.findViewById(R.id.businessHour);
         price=(EditText)view.findViewById(R.id.price);
+
         button_gameNum=(Button)view.findViewById(R.id.button_gameName);
         button_businessHour=(Button)view.findViewById(R.id.button_businessHour);
         button_price=(Button)view.findViewById(R.id.button_price);
@@ -59,6 +64,38 @@ public class Dialog_Owner extends androidx.fragment.app.DialogFragment implement
         db=FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
         UserEmail=user.getEmail();
+
+
+        CollectionReference PostRef = (CollectionReference) db.collection("cafe");
+        PostRef
+                .document(mCafe.id)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                //카페 존재합니다
+                                cafeDB cafedata=document.toObject(cafeDB.class);
+                                businessHour.setText(cafedata.getBusinessHour());
+                                price.setText(cafedata.getPrice());
+                                //gameName.setText(cafedata.getCafeGameList());
+                                ArrayList<String> temp= cafedata.getCafeGameList();
+                                String str_temp="";
+                                for(int i=0;i<temp.size();i++){
+                                    str_temp+=temp.get(i)+",";
+                                }
+                                gameName.setText(
+                                        str_temp
+                                );
+
+                            } else {
+                            }
+                        } else {
+                        }
+                    }
+                });
 
         button_gameNum.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -99,7 +136,7 @@ public class Dialog_Owner extends androidx.fragment.app.DialogFragment implement
                 if (input.size() != 0) {
                     CollectionReference PostRef = (CollectionReference) db.collection("cafe");
                     PostRef
-                            .document(MapView.cafe_map.get(mI).id)
+                            .document(mCafe.id)
                             .get()
                             .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
@@ -109,23 +146,27 @@ public class Dialog_Owner extends androidx.fragment.app.DialogFragment implement
                                         if (document.exists()) {
                                             //카페 존재합니다
                                             //Toast.makeText(getActivity(),gameName.getText()+", 카페 정보 입력", Toast.LENGTH_SHORT).show();
-                                            DocumentReference docRef=db.collection("cafe").document(MapView.cafe_map.get(mI).id);
-                                            for(int i=0;i<input.size();i++) {
+                                            DocumentReference docRef=db.collection("cafe").document(mCafe.id);
+                                            /*for(int i=0;i<input.size();i++) {
                                                 docRef.update("cafeGameList", FieldValue.arrayUnion(input.get(i)));
-                                            }
-                                            dismiss();
+                                            }*/
+                                            docRef.update("cafeGameList", input);
+                                            //dismiss();
 
                                         } else {
                                             //카페 존재 안함
                                             // 추가해줌 = clean,게임많은지,서비스 ,, 각 인원
-                                            cafeDB cafe=new cafeDB(MapView.cafe_map.get(mI).place_name,0,
+                                            cafeDB cafe=new cafeDB(mCafe.place_name,0,
                                                     0, 0, 0, input, "", ""
-                                                    ,MapView.cafe_map.get(mI).address_name,
-                                                    MapView.cafe_map.get(mI).phone);
-                                            db.collection("cafe").document(MapView.cafe_map.get(mI).id).set(cafe);
+                                                    ,mCafe.address_name,
+                                                    mCafe.phone);
+                                            db.collection("cafe").document(mCafe.id).set(cafe);
                                             //Toast.makeText(getActivity(), "cafe 없어서 추가했음"+MapView.cafe_map.get(i).id, Toast.LENGTH_LONG).show();
-                                            dismiss();
+                                            //dismiss();
                                         }
+                                        Toast.makeText(getActivity(), "수정되었습니다.", Toast.LENGTH_SHORT).show();
+
+
                                     } else {
                                     }
                                 }
@@ -135,13 +176,17 @@ public class Dialog_Owner extends androidx.fragment.app.DialogFragment implement
                 }
             }
         });
+
+
+
         button_businessHour.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (businessHour.getText().toString().trim().length() != 0) {
                     CollectionReference PostRef = (CollectionReference) db.collection("cafe");
                     PostRef
-                            .document(MapView.cafe_map.get(mI).id)
+                            .document(mCafe.id)
                             .get()
                             .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
@@ -152,20 +197,22 @@ public class Dialog_Owner extends androidx.fragment.app.DialogFragment implement
                                             //카페 존재합니다
                                             //Toast.makeText(getActivity(),businessHour.getText()+", 카페 정보 입력", Toast.LENGTH_SHORT).show();
                                             //문서 업데이트 해줌 = 각 num++1 , 평균값
-                                            DocumentReference docRef = db.collection("cafe").document(MapView.cafe_map.get(mI).id);
+                                            DocumentReference docRef = db.collection("cafe").document(mCafe.id);
                                             docRef.update("businessHour", businessHour.getText().toString().trim());
-                                            dismiss();
+                                            //dismiss();
 
                                         } else {
                                             //카페 존재 안함
                                             // 추가해줌 = clean,게임많은지,서비스 ,, 각 인원
-                                            cafeDB cafe = new cafeDB(MapView.cafe_map.get(mI).place_name, 0,
+                                            cafeDB cafe = new cafeDB(mCafe.place_name, 0,
                                                     0, 0, 0, new ArrayList<>(), businessHour.getText().toString().trim(), ""
-                                                    ,MapView.cafe_map.get(mI).address_name,
-                                                    MapView.cafe_map.get(mI).phone);
-                                            db.collection("cafe").document(MapView.cafe_map.get(mI).id).set(cafe);
-                                            dismiss();
+                                                    ,mCafe.address_name,
+                                                    mCafe.phone);
+                                            db.collection("cafe").document(mCafe.id).set(cafe);
+                                            //dismiss();
                                         }
+                                        Toast.makeText(getActivity(), "수정되었습니다.", Toast.LENGTH_SHORT).show();
+
                                     } else {
                                     }
                                 }
@@ -181,7 +228,7 @@ public class Dialog_Owner extends androidx.fragment.app.DialogFragment implement
                 if (price.getText().toString().trim().length() != 0) {
                     CollectionReference PostRef = (CollectionReference) db.collection("cafe");
                     PostRef
-                            .document(MapView.cafe_map.get(mI).id)
+                            .document(mCafe.id)
                             .get()
                             .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
@@ -192,20 +239,22 @@ public class Dialog_Owner extends androidx.fragment.app.DialogFragment implement
                                             //카페 존재합니다
                                             //Toast.makeText(getActivity(),businessHour.getText()+", 카페 정보 입력", Toast.LENGTH_SHORT).show();
                                             //문서 업데이트 해줌 = 각 num++1 , 평균값
-                                            DocumentReference docRef = db.collection("cafe").document(MapView.cafe_map.get(mI).id);
+                                            DocumentReference docRef = db.collection("cafe").document(mCafe.id);
                                             docRef.update("price", price.getText().toString().trim());
-                                            dismiss();
+                                            //dismiss();
 
                                         } else {
                                             //카페 존재 안함
                                             // 추가해줌 = clean,게임많은지,서비스 ,, 각 인원
-                                            cafeDB cafe = new cafeDB(MapView.cafe_map.get(mI).place_name, 0,
+                                            cafeDB cafe = new cafeDB(mCafe.place_name, 0,
                                                     0, 0, 0, new ArrayList<>(), "", price.getText().toString().trim()
-                                                    ,MapView.cafe_map.get(mI).address_name,
-                                                    MapView.cafe_map.get(mI).phone);
-                                            db.collection("cafe").document(MapView.cafe_map.get(mI).id).set(cafe);
-                                            dismiss();
+                                                    ,mCafe.address_name,
+                                                    mCafe.phone);
+                                            db.collection("cafe").document(mCafe.id).set(cafe);
+                                            //dismiss();
                                         }
+                                        Toast.makeText(getActivity(), "수정되었습니다.", Toast.LENGTH_SHORT).show();
+
                                     } else {
                                     }
                                 }
@@ -221,6 +270,6 @@ public class Dialog_Owner extends androidx.fragment.app.DialogFragment implement
 
     @Override
     public void onClick(View view) {
-
+        dismiss();
     }
 }

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.w3c.dom.Text;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -66,6 +68,14 @@ public class FragmentHome extends Fragment {
     private GameData todayGameData;
 
     private ArrayList<BoardCafe> boardCafeArrayList;
+
+    //infodialog_home
+    cafeDB cafe1;
+    String cafeId1;
+    cafeDB cafe2;
+    String cafeId2;
+    cafeDB cafe3;
+    String cafeId3;
 
     @Nullable
     @Override
@@ -122,6 +132,8 @@ public class FragmentHome extends Fragment {
             }
         });
 
+
+
         gameNameM=new String[5];
         //1. 오늘의 게임
         setTodayGame();
@@ -131,6 +143,46 @@ public class FragmentHome extends Fragment {
         //3. 인기 보드게임 카페
         showTopCafe();
         //4. 최근 업데이트 된 보드게임 카페?
+
+        LinearLayout linear_layout_cafe1=viewGroup.findViewById(R.id.linear_layout_cafe1);
+        linear_layout_cafe1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Search_top_cafe search_top_cafe= new Search_top_cafe(cafe1, getChildFragmentManager());
+                try {
+                    search_top_cafe.searchBoardCafeData();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                //InfoWindowDialog_home infoWindowDialog_home= new InfoWindowDialog_home(cafe1, cafeId1);
+                //infoWindowDialog_home.show(getFragmentManager(), InfoWindowDialog_home.TAG_EVENT_DIALOG);
+            }
+        });
+        LinearLayout linear_layout_cafe2=viewGroup.findViewById(R.id.linear_layout_cafe2);
+        linear_layout_cafe2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Search_top_cafe search_top_cafe= new Search_top_cafe(cafe2, getChildFragmentManager());
+                try {
+                    search_top_cafe.searchBoardCafeData();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                //InfoWindowDialog_home infoWindowDialog_home= new InfoWindowDialog_home(cafe2, cafeId2);
+                //infoWindowDialog_home.show(getFragmentManager(), InfoWindowDialog_home.TAG_EVENT_DIALOG);
+            }
+        });
+        LinearLayout linear_layout_cafe3=viewGroup.findViewById(R.id.linear_layout_cafe3);
+        linear_layout_cafe3.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Search_top_cafe search_top_cafe= new Search_top_cafe(cafe3, getChildFragmentManager());
+                try {
+                    search_top_cafe.searchBoardCafeData();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                //InfoWindowDialog_home infoWindowDialog_home= new InfoWindowDialog_home(cafe3, cafeId3);
+                //infoWindowDialog_home.show(getFragmentManager(), InfoWindowDialog_home.TAG_EVENT_DIALOG);
+            }
+        });
 
 
 
@@ -458,6 +510,21 @@ public class FragmentHome extends Fragment {
                                 //Log.d(TAG, document.getId() + " => " + document.getData());
                                 cafeDB cafeData=(document.toObject(cafeDB.class));
                                 //boardCafeArrayList.add(cafeData);
+
+                                String cafeId=(document.getId());
+
+                                if(num==0){
+                                    cafe1=cafeData;
+                                    cafeId1=cafeId;
+                                }else if(num ==1){
+                                    cafe2=cafeData;
+                                    cafeId2=cafeId;
+                                }else if(num==2){
+                                    cafe3=cafeData;
+                                    cafeId3=cafeId;
+                                }
+
+
                                 txtviewCafeName[num].setText(cafeData.getCafeName());
                                 txtviewCafeAddr[num].setText(cafeData.getAddress_name());
                                 txtviewCafePhone[num++].setText(cafeData.getPhone());

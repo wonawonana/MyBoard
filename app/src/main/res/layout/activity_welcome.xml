@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/point1"
     android:orientation="vertical"
     tools:context=".WelcomeActivity">
 
@@ -74,9 +75,9 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="0dp"
                 android:gravity="center_horizontal"
-                app:srcCompat="@drawable/about_me_wemake"
+                android:textColor="#03070D"
 
-                android:textColor="#03070D" />
+                app:srcCompat="@drawable/about_me_wemake" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -138,10 +139,10 @@
 
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:gravity="center_horizontal"
-            app:srcCompat="@drawable/preference_tag_wemake"
             android:layout_marginBottom="0dp"
-            android:textColor="#03070D" />
+            android:gravity="center_horizontal"
+            android:textColor="#03070D"
+            app:srcCompat="@drawable/preference_tag_wemake" />
 
         <LinearLayout
             android:layout_width="match_parent"

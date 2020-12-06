@@ -24,7 +24,7 @@ public class SearchDialog extends androidx.fragment.app.DialogFragment implement
     private RecyclerView.Adapter mAdapter;
     private RecyclerView list;
     private RecyclerView.Adapter recyclerAdapter;
-    FragmentManager mFragmentManager;
+    private FragmentManager mFragmentManager;
 
     ArrayList<BoardCafe> mSearch_result;
     public SearchDialog(ArrayList<BoardCafe> search_result, FragmentManager mFragmentManager){

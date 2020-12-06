@@ -28,7 +28,7 @@ import java.util.HashMap;
 
 public class InfoWindowDialog extends androidx.fragment.app.DialogFragment implements View.OnClickListener{
     public static final String TAG_EVENT_DIALOG="dialog_event";
-    int mI;
+    private BoardCafe mCafe;
     //api
     TextView textPlaceName;
     TextView textAddress;
@@ -50,6 +50,7 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
     Button input;
     //사장 버튼
     Button owner;
+    TextView announce;
 
     //좋아요
     Button favorite;
@@ -59,10 +60,8 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
     FirebaseUser user;
     String UserEmail;
 
-
-
-    public InfoWindowDialog(int i){
-        mI=i;
+    public InfoWindowDialog(BoardCafe cafe){
+        mCafe=cafe;
     }
 
     @Nullable
@@ -70,16 +69,16 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
     public  View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                               @Nullable Bundle savedInstanceState){
         View view= inflater.inflate(R.layout.dialog_cafe, container);
-        //api
+
         textPlaceName = (TextView) view.findViewById(R.id.textPlaceName);
         textAddress = (TextView) view.findViewById(R.id.textAddress);
         textPhone = (TextView) view.findViewById(R.id.textPhone);
-        textPlaceName.setText(MapView.cafe_map.get(mI).place_name);
-        if(MapView.cafe_map.get(mI).address_name.length()!=0) {
-            textAddress.setText(" "+ MapView.cafe_map.get(mI).address_name);
+        textPlaceName.setText(mCafe.place_name);
+        if(mCafe.address_name.length()!=0) {
+            textAddress.setText(" "+ mCafe.address_name);
         }
-        if(MapView.cafe_map.get(mI).phone.length()!=0) {
-            textPhone.setText(" "+MapView.cafe_map.get(mI).phone);
+        if(mCafe.phone.length()!=0) {
+            textPhone.setText(" "+mCafe.phone);
         }
         //rating
         ratingBar01= (RatingBar) view.findViewById(R.id.ratingBar01);
@@ -106,12 +105,14 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
             public void onClick(View view) {
                 //info 닫기
                 dismiss();
-                new Dialog_Input(mI).show(getFragmentManager(), Dialog_Input.TAG_EVENT_DIALOG);
+                new Dialog_Input(mCafe).show(getFragmentManager(), Dialog_Input.TAG_EVENT_DIALOG);
             }
         });
 
         /*사장님*/
         owner=(Button) view.findViewById(R.id.button_owner);
+        announce=(TextView)view.findViewById(R.id.announce);
+        announce.setVisibility(View.INVISIBLE);
         owner.setVisibility(View.INVISIBLE);
         //info 닫기
         db.collection("CEO").document(UserEmail)
@@ -122,21 +123,20 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         //이 유저는 사장이 맞습니다.
-                        if(document.getString("cafeId").equals(MapView.cafe_map.get(mI).id)){
+                        if(document.getString("cafeId").equals(mCafe.id)){
+
                             owner.setVisibility(View.VISIBLE);
-                            //해당 카페 사장이 맞습니다
-                            //화면 창 띄우기
-                            //dismiss();
-                            //new Dialog_Owner(mI).show(getFragmentManager(), Dialog_Input.TAG_EVENT_DIALOG);
                         }
                         else{
                             //해당 카페 사장이 아닙니다.
+                            announce.setVisibility(View.VISIBLE);
                             //Toast.makeText(getActivity(),"해당 카페 사장이 아닙니다.",Toast.LENGTH_LONG).show();
                         }
                         // Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                     } else {
                         // Log.d(TAG, "No such document");
                         //이 유저는 사장이 아닙니다.
+                        announce.setVisibility(View.VISIBLE);
                         //Toast.makeText(getActivity(),"사장 인증 후 이용하실 수 있습니다.",Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -149,7 +149,7 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
             public void onClick(View view) {
                 //화면 창 띄우기
                 dismiss();
-                new Dialog_Owner(mI).show(getFragmentManager(), Dialog_Input.TAG_EVENT_DIALOG);
+                new Dialog_Owner(mCafe).show(getFragmentManager(), Dialog_Input.TAG_EVENT_DIALOG);
             }
         });
 
@@ -159,13 +159,11 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
         favorite.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HashMap<String,String>map=new HashMap<>();
-
                 CollectionReference mPostReference =
                         (CollectionReference) db.collection("member").document(UserEmail)
                                 .collection("LikeCafe");
                 mPostReference
-                        .document(MapView.cafe_map.get(mI).id)
+                        .document(mCafe.id)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
@@ -174,19 +172,15 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
                                     DocumentSnapshot document = task.getResult();
                                     if (document.exists()) {
                                         Toast.makeText(getContext(), "이미 추가된 카페입니다.", Toast.LENGTH_SHORT).show();
-
                                     } else {
                                         //내 컬랙션에 추가하지 않은 카페
                                         //카페 데이터 유저 db 에 추가
-                                        map.put("placeName", MapView.cafe_map.get(mI).place_name);
-                                        map.put("addressName", MapView.cafe_map.get(mI).address_name);
-                                        BoardCafe boardCafe=MapView.cafe_map.get(mI);
+                                        BoardCafe boardCafe=mCafe;
                                         //Item item =new Item(1,"2","3");
                                         //mPostReference.document(MapView.cafe_map.get(mI).id).set(item);
-                                        mPostReference.document(MapView.cafe_map.get(mI).id).set(boardCafe);
-
+                                        mPostReference.document(mCafe.id).set(boardCafe);
                                         //cafe DB에 추가하지 않은 카페일때
-                                        db.collection("cafe").document(MapView.cafe_map.get(mI).id).get()
+                                        db.collection("cafe").document(mCafe.id).get()
                                                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -195,15 +189,15 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
                                                             if (document.exists()) {
                                                                 //카페 db 에 이미 추가된 카페일때
                                                                 //likeNum++
-                                                                db.collection("cafe").document(MapView.cafe_map.get(mI).id).update("likeNum", FieldValue.increment(1));
+                                                                db.collection("cafe").document(mCafe.id).update("likeNum", FieldValue.increment(1));
                                                             } else {
                                                                 //카페 db 에 추가하지 않은 카페일때
-                                                                cafeDB cafe=new cafeDB(MapView.cafe_map.get(mI).place_name,0,
-                                                                        0, 0,0, new ArrayList<>(), "", "",MapView.cafe_map.get(mI).address_name,
-                                                                        MapView.cafe_map.get(mI).phone);
-                                                                db.collection("cafe").document(MapView.cafe_map.get(mI).id).set(cafe);
+                                                                cafeDB cafe=new cafeDB(mCafe.place_name,0,
+                                                                        0, 0,0, new ArrayList<>(), "", "",mCafe.address_name,
+                                                                        mCafe.phone);
+                                                                db.collection("cafe").document(mCafe.id).set(cafe);
                                                                 //좋아요 field 추가
-                                                                db.collection("cafe").document(MapView.cafe_map.get(mI).id).update("likeNum",1);
+                                                                db.collection("cafe").document(mCafe.id).update("likeNum",1);
                                                             }
                                                         }
                                                         else{
@@ -211,7 +205,7 @@ public class InfoWindowDialog extends androidx.fragment.app.DialogFragment imple
                                                         }
                                                     }
                                                 });
-                                        Toast.makeText(getActivity(), MapView.cafe_map.get(mI).place_name+"like list 에 추가했습니다.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getActivity(), mCafe.place_name+"like list 에 추가했습니다.", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
                                     //Log.d(TAG, "get failed with ", task.getException());
