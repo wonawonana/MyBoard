@@ -1,6 +1,11 @@
 # MyBoard
 
-#### back -> https://github.com/hjso/Myboardbackend 
+
+###### 2020 CAU Capstone Design
+###### team 4 - MBG
+###### User-customized board game assistant application for board game users
+
+###### back -> https://github.com/hjso/Myboardbackend 
 
 
 ##### src/main/res/drawable/dice.png from 
