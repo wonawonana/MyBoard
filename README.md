@@ -9,7 +9,7 @@
 ###### backend -> https://github.com/hjso/Myboardbackend 
 
 
-<div>Icons made by <a href="https://www.flaticon.com/authors/dimi-kazak" title="Dimi Kazak">Dimi Kazak</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+
 
 -----------------------------
 
@@ -37,3 +37,7 @@
 
 ### 8. my profile
 ![9](https://user-images.githubusercontent.com/56299516/111018193-dd223000-83fa-11eb-905d-0e24b9aa2b7f.jpg)
+
+------------------
+
+<div>Icons made by <a href="https://www.flaticon.com/authors/dimi-kazak" title="Dimi Kazak">Dimi Kazak</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
