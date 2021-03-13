@@ -10,7 +10,7 @@
 
 -----------------------------
 <div>Icons made by <a href="https://www.flaticon.com/authors/dimi-kazak" title="Dimi Kazak">Dimi Kazak</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
-----
+-----------------------------
 ### 1. log in 
 ![KakaoTalk_20210313_122742269](https://user-images.githubusercontent.com/56299516/111018121-86b4f180-83fa-11eb-8541-92739b03a576.jpg)
 
