@@ -8,7 +8,7 @@
 
 ###### backend -> https://github.com/hjso/Myboardbackend 
 
-### API KEY, ID SETTING in res/maifest.xml
+### API KEY, ID SETTING in MyBoard/app/src/main/AndroidManifest.xml
 
 
 -----------------------------
