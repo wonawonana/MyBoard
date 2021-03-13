@@ -27,7 +27,7 @@
 
 ### 5. map
 ![5](https://user-images.githubusercontent.com/56299516/111018176-c1b72500-83fa-11eb-9065-6cc9b8189d88.jpg)
-![6](https://user-images.githubusercontent.com/56299516/111018186-d1366e00-83fa-11eb-9134-579f6b4c5651.jpg)
+![KakaoTalk_20210313_130707606 - 복사본](https://user-images.githubusercontent.com/56299516/111018764-13ad7a00-83fe-11eb-9b72-82fd98379dbd.jpg)
 
 ### 6. search
 ![7](https://user-images.githubusercontent.com/56299516/111018194-ddbac680-83fa-11eb-9ebf-653432ac5df3.jpg)
